@@ -6,7 +6,7 @@
 #include <vector>
 
 
-class nf_profile {
+struct NfProfile {
     long nf_instance_id;
     string nf_type;
     string nf_status;
