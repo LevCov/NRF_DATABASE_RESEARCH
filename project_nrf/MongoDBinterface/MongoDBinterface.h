@@ -9,10 +9,11 @@
 #include <bsoncxx/json.hpp>
 #include <string>
 #include <typeinfo>
+
 class MongoDBConnector {
 public:
     MongoDBConnector(const char *uri_string) {
-        
+ 
         client_ = mongocxx::client{ mongocxx::uri{uri_string} };
         
     };
@@ -20,9 +21,7 @@ public:
 
     void InsertDocument(const char* database_name, const char* collection_name, const bsoncxx::document::value& document) {
         
-        
-        mongocxx::client client_(uri);
-
+        mongocxx::instance instance{};
         auto db = client_[database_name];
         auto collection = db[collection_name];
         collection.insert_one(document.view());
@@ -31,7 +30,7 @@ public:
     auto FindDocuments (const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter) {
         
         
-        mongocxx::client client_(uri);
+        mongocxx::instance instance{};
 
         auto db = client_[database_name];
         auto collection = db[collection_name];
@@ -42,7 +41,7 @@ public:
 
     void UpdateDocument(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter, const bsoncxx::document::view_or_value& update) {
        
-        mongocxx::client client_(uri);
+        mongocxx::instance instance{};
         
         auto db = client_[database_name];
         auto collection = db[collection_name];
@@ -50,8 +49,8 @@ public:
     }
 
     void DeleteDocument(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter) {
-        // Инициализация MongoDB
-        mongocxx::client client_(uri);
+        
+        mongocxx::instance instance{};
         
         auto db = client_[database_name];
         auto collection = db[collection_name];
@@ -65,9 +64,6 @@ public:
 private:
     mongocxx::client client_;
     mongocxx::uri uri;
-    std::string db;
-    std::string collection;
+    std::string dbname;
+    std::string colname;
 };
-
-
-
