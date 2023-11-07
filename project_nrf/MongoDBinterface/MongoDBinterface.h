@@ -21,13 +21,13 @@ public:
     MongoDBConnector(const char* uri_string) {
 
         client_ = mongocxx::client{ mongocxx::uri{uri_string} };
-
+        
     };
 
 
     void Create(const char* database_name, const char* collection_name) {
 
-        mongocxx::instance instance{};
+       // mongocxx::instance instance{};
 
         try {
 
@@ -49,8 +49,8 @@ public:
 
     void Drop(const char* database_name)
     {
-        mongocxx::instance instance{};
-
+       
+        client_ = mongocxx::client{ mongocxx::uri{"mongodb://localhost:27017"} };
         client_[database_name].drop();
  
    
@@ -59,7 +59,7 @@ public:
 
     void InsertDocument(const char* database_name, const char* collection_name, const bsoncxx::document::value& document) {
 
-        mongocxx::instance instance{};
+        //mongocxx::instance instance{};
         auto db = client_[database_name];
         auto collection = db[collection_name];
         collection.insert_one(document.view());
@@ -69,7 +69,7 @@ public:
     void UpdateDocument(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter, const bsoncxx::document::view_or_value& update) {
         
         
-        mongocxx::instance instance{};
+        //mongocxx::instance instance{};
         
         auto db = client_[database_name]; 
         auto collection = db[collection_name];
@@ -78,7 +78,7 @@ public:
 
     void DeleteDocument(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter) {
 
-        mongocxx::instance instance{};
+        //mongocxx::instance instance{};
 
         auto db = client_[database_name];
         auto collection = db[collection_name];
