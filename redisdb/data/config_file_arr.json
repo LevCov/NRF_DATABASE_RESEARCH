@@ -1,0 +1,15 @@
+
+[ 
+    {
+        "nfInstanceId": "string",
+        "nfInstanceName": "string",
+        "nfType": "NRF",
+        "nfStatus": "REGISTERED"
+    },
+    {
+        "nfInstanceId": "string",
+        "nfInstanceName": "string",
+        "nfType": "NRF",
+        "nfStatus": "REGISTERED"
+    }
+]

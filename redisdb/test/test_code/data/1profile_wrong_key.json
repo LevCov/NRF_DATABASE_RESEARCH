@@ -1,0 +1,6 @@
+{
+    "nfInstanceId__WRONG_KEY": "string",
+    "nfInstanceName": "string",
+    "nfType": "NRF",
+    "nfStatus": "REGISTERED"
+}

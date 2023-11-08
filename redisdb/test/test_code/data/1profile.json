@@ -1,0 +1,1222 @@
+{
+    "nfInstanceId": "string",
+    "nfInstanceName": "string",
+    "nfType": "NRF",
+    "nfStatus": "REGISTERED",
+    "collocatedNfInstances": [
+        {
+        "nfInstanceId": "string",
+        "nfType": "UPF"
+        }
+    ],
+    "heartBeatTimer": 1,
+    "plmnList": [
+        "string"
+    ],
+    "snpnList": [
+        "string"
+    ],
+    "sNssais": [
+        "string"
+    ],
+    "perPlmnSnssaiList": [
+        {
+        "plmnId": "string",
+        "sNssaiList": [
+            "string"
+        ],
+        "nid": "string"
+        }
+    ],
+    "nsiList": [
+        "string"
+    ],
+    "fqdn": "string",
+    "interPlmnFqdn": "string",
+    "ipv4Addresses": [
+        "string"
+    ],
+    "ipv6Addresses": [
+        "string"
+    ],
+    "allowedPlmns": [
+        "string"
+    ],
+    "allowedSnpns": [
+        "string"
+    ],
+    "allowedNfTypes": [
+        "NRF",
+        "string"
+    ],
+    "allowedNfDomains": [
+        "string"
+    ],
+    "allowedNssais": [
+        "string"
+    ],
+    "priority": 65535,
+    "capacity": 65535,
+    "load": 100,
+    "loadTimeStamp": "string",
+    "locality": "string",
+    "extLocality": {},
+    "udrInfo": {
+        "groupId": "string",
+        "supiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "gpsiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "externalGroupIdentifiersRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "supportedDataSets": [
+        "SUBSCRIPTION",
+        "string"
+        ],
+        "sharedDataIdRanges": [
+        {
+            "pattern": "string"
+        }
+        ]
+    },
+    "udrInfoList": {},
+    "udmInfo": {
+        "groupId": "string",
+        "supiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "gpsiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "externalGroupIdentifiersRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "routingIndicators": [
+        "string"
+        ],
+        "internalGroupIdentifiersRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "suciInfos": [
+        {
+            "routingInds": [
+            "string"
+            ],
+            "hNwPubKeyIds": [
+            0
+            ]
+        }
+        ]
+    },
+    "udmInfoList": {},
+    "ausfInfo": {
+        "groupId": "string",
+        "supiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "routingIndicators": [
+        "string"
+        ],
+        "suciInfos": [
+        {
+            "routingInds": [
+            "string"
+            ],
+            "hNwPubKeyIds": [
+            0
+            ]
+        }
+        ]
+    },
+    "ausfInfoList": {},
+    "amfInfo": {
+        "amfSetId": "string",
+        "amfRegionId": "string",
+        "guamiList": [
+        "string"
+        ],
+        "taiList": [
+        "string"
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ],
+        "backupInfoAmfFailure": [
+        "string"
+        ],
+        "backupInfoAmfRemoval": [
+        "string"
+        ],
+        "n2InterfaceAmfInfo": {
+        "ipv4EndpointAddress": [
+            "string"
+        ],
+        "ipv6EndpointAddress": [
+            "string"
+        ],
+        "amfName": "string"
+        },
+        "amfOnboardingCapability": false,
+        "highLatencyCom": true
+    },
+    "amfInfoList": {},
+    "smfInfo": {
+        "sNssaiSmfInfoList": [
+        {
+            "sNssai": "string",
+            "dnnSmfInfoList": [
+            {
+                "dnn": "string",
+                "dnaiList": [
+                "string",
+                "string"
+                ]
+            }
+            ]
+        }
+        ],
+        "taiList": [
+        "string"
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ],
+        "pgwFqdn": "string",
+        "pgwIpAddrList": [
+        "string"
+        ],
+        "accessType": [
+        "string"
+        ],
+        "priority": 65535,
+        "vsmfSupportInd": true,
+        "pgwFqdnList": [
+        "string"
+        ],
+        "ismfSupportInd": true,
+        "smfUPRPCapability": false
+    },
+    "smfInfoList": {},
+    "upfInfo": {
+        "sNssaiUpfInfoList": [
+        {
+            "sNssai": "string",
+            "dnnUpfInfoList": [
+            {
+                "dnn": "string",
+                "dnaiList": [
+                "string"
+                ],
+                "pduSessionTypes": [
+                "string"
+                ],
+                "ipv4AddressRanges": [
+                {
+                    "start": "string",
+                    "end": "string"
+                }
+                ],
+                "ipv6PrefixRanges": [
+                {
+                    "start": "string",
+                    "end": "string"
+                }
+                ],
+                "natedIpv4AddressRanges": [
+                {
+                    "start": "string",
+                    "end": "string"
+                }
+                ],
+                "natedIpv6PrefixRanges": [
+                {
+                    "start": "string",
+                    "end": "string"
+                }
+                ],
+                "ipv4IndexList": [
+                "string"
+                ],
+                "ipv6IndexList": [
+                "string"
+                ],
+                "networkInstance": "string",
+                "dnaiNwInstanceList": {}
+            }
+            ],
+            "redundantTransport": false
+        }
+        ],
+        "smfServingArea": [
+        "string"
+        ],
+        "interfaceUpfInfoList": [
+        {
+            "interfaceType": "N3",
+            "ipv4EndpointAddresses": [
+            "string"
+            ],
+            "ipv6EndpointAddresses": [
+            "string"
+            ],
+            "endpointFqdn": "string",
+            "networkInstance": "string"
+        },
+        {
+            "interfaceType": "N3",
+            "ipv4EndpointAddresses": [
+            "string"
+            ],
+            "ipv6EndpointAddresses": [
+            "string"
+            ],
+            "endpointFqdn": "string",
+            "networkInstance": "string"
+        },
+        {
+            "interfaceType": "N3",
+            "ipv4EndpointAddresses": [
+            "string"
+            ],
+            "ipv6EndpointAddresses": [
+            "string"
+            ],
+            "endpointFqdn": "string",
+            "networkInstance": "string"
+        }
+        ],
+        "iwkEpsInd": false,
+        "sxaInd": true,
+        "pduSessionTypes": [
+        "string"
+        ],
+        "atsssCapability": "string",
+        "ueIpAddrInd": false,
+        "taiList": [
+        "string"
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ],
+        "wAgfInfo": {
+        "ipv4EndpointAddresses": [
+            "string"
+        ],
+        "ipv6EndpointAddresses": [
+            "string"
+        ],
+        "endpointFqdn": "string"
+        },
+        "tngfInfo": {
+        "ipv4EndpointAddresses": [
+            "string"
+        ],
+        "ipv6EndpointAddresses": [
+            "string"
+        ],
+        "endpointFqdn": "string"
+        },
+        "twifInfo": {
+        "ipv4EndpointAddresses": [
+            "string"
+        ],
+        "ipv6EndpointAddresses": [
+            "string"
+        ],
+        "endpointFqdn": "string"
+        },
+        "priority": 65535,
+        "redundantGtpu": false,
+        "ipups": false,
+        "dataForwarding": false,
+        "supportedPfcpFeatures": "string",
+        "upfEvents": [
+        "string"
+        ]
+    },
+    "upfInfoList": {},
+    "pcfInfo": {
+        "groupId": "string",
+        "dnnList": [
+        "string"
+        ],
+        "supiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "gpsiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "rxDiamHost": "string",
+        "rxDiamRealm": "string",
+        "v2xSupportInd": false,
+        "proseSupportInd": false,
+        "proseCapability": {
+        "proseDirectDiscovey": false,
+        "proseDirectCommunication": false,
+        "proseL2UetoNetworkRelay": false,
+        "proseL3UetoNetworkRelay": false,
+        "proseL2RemoteUe": false,
+        "proseL3RemoteUe": false,
+        "proseL2UetoUeRelay": false,
+        "proseL3UetoUeRelay": false,
+        "proseL2EndUe": false,
+        "proseL3EndUe": false
+        },
+        "v2xCapability": {
+        "lteV2x": false,
+        "nrV2x": false
+        }
+    },
+    "pcfInfoList": {},
+    "bsfInfo": {
+        "dnnList": [
+        "string"
+        ],
+        "ipDomainList": [
+        "string"
+        ],
+        "ipv4AddressRanges": [
+        {
+            "start": "string",
+            "end": "string"
+        }
+        ],
+        "ipv6PrefixRanges": [
+        {
+            "start": "string",
+            "end": "string"
+        }
+        ],
+        "rxDiamHost": "string",
+        "rxDiamRealm": "string",
+        "groupId": "string",
+        "supiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "gpsiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ]
+    },
+    "bsfInfoList": {},
+    "chfInfo": {
+        "supiRangeList": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "gpsiRangeList": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "plmnRangeList": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "groupId": "string",
+        "primaryChfInstance": "string",
+        "secondaryChfInstance": "string"
+    },
+    "chfInfoList": {},
+    "nefInfo": {
+        "nefId": "string",
+        "pfdData": {
+        "appIds": [
+            "string"
+        ],
+        "afIds": [
+            "string"
+        ]
+        },
+        "afEeData": {
+        "afEvents": [
+            "string"
+        ],
+        "afIds": [
+            "string"
+        ],
+        "appIds": [
+            "string"
+        ],
+        "taiList": [
+            "string"
+        ],
+        "taiRangeList": [
+            {
+            "plmnId": "string",
+            "tacRangeList": [
+                {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+                },
+                {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+                }
+            ],
+            "nid": "string"
+            }
+        ]
+        },
+        "gpsiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "externalGroupIdentifiersRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "servedFqdnList": [
+        "string"
+        ],
+        "taiList": [
+        "string"
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ],
+        "dnaiList": [
+        "string"
+        ],
+        "unTrustAfInfoList": [
+        {
+            "afId": "string",
+            "sNssaiInfoList": [
+            {
+                "sNssai": "string",
+                "dnnInfoList": [
+                {
+                    "dnn": "string"
+                }
+                ]
+            }
+            ],
+            "mappingInd": false
+        }
+        ],
+        "uasNfFunctionalityInd": false
+    },
+    "nrfInfo": {
+        "servedUdrInfo": {},
+        "servedUdrInfoList": {},
+        "servedUdmInfo": {},
+        "servedUdmInfoList": {},
+        "servedAusfInfo": {},
+        "servedAusfInfoList": {},
+        "servedAmfInfo": {},
+        "servedAmfInfoList": {},
+        "servedSmfInfo": {},
+        "servedSmfInfoList": {},
+        "servedUpfInfo": {},
+        "servedUpfInfoList": {},
+        "servedPcfInfo": {},
+        "servedPcfInfoList": {},
+        "servedBsfInfo": {},
+        "servedBsfInfoList": {},
+        "servedChfInfo": {},
+        "servedChfInfoList": {},
+        "servedNefInfo": {},
+        "servedNwdafInfo": {},
+        "servedNwdafInfoList": {},
+        "servedPcscfInfoList": {},
+        "servedGmlcInfo": {},
+        "servedLmfInfo": {},
+        "servedNfInfo": {},
+        "servedHssInfoList": {},
+        "servedUdsfInfo": {},
+        "servedUdsfInfoList": {},
+        "servedScpInfoList": {},
+        "servedSeppInfoList": {},
+        "servedAanfInfoList": {
+        "additionalProp1": {},
+        "additionalProp2": {},
+        "additionalProp3": {}
+        },
+        "served5gDdnmfInfo": {},
+        "servedMfafInfoList": {},
+        "servedEasdfInfoList": {
+        "additionalProp1": {},
+        "additionalProp2": {},
+        "additionalProp3": {}
+        },
+        "servedDccfInfoList": {},
+        "servedMbSmfInfoList": {},
+        "servedTsctsfInfoList": {},
+        "servedMbUpfInfoList": {},
+        "servedTrustAfInfo": {},
+        "servedNssaafInfo": {}
+    },
+    "udsfInfo": {
+        "groupId": "string",
+        "supiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "storageIdRanges": {}
+    },
+    "udsfInfoList": {},
+    "nwdafInfo": {
+        "eventIds": [
+        "string"
+        ],
+        "nwdafEvents": [
+        "string"
+        ],
+        "taiList": [
+        "string"
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ],
+        "nwdafCapability": {
+        "analyticsAggregation": false,
+        "analyticsMetadataProvisioning": false,
+        "mlModelAccuracyChecking": false,
+        "analyticsAccuracyChecking": false
+        },
+        "analyticsDelay": "string",
+        "servingNfSetIdList": [
+        "string"
+        ],
+        "servingNfTypeList": [
+        "NRF",
+        "string"
+        ],
+        "mlAnalyticsList": [
+        {
+            "mlAnalyticsIds": [
+            "string"
+            ],
+            "snssaiList": [
+            "string"
+            ],
+            "trackingAreaList": [
+            "string"
+            ],
+            "mlModelInterInfo": {
+            "vendorList": [
+                "string"
+            ]
+            },
+            "flCapabilityType": "FL_SERVER",
+            "flTimeInterval": "string"
+        }
+        ]
+    },
+    "nwdafInfoList": {},
+    "pcscfInfoList": {},
+    "hssInfoList": {},
+    "customInfo": {},
+    "recoveryTime": "string",
+    "nfServicePersistence": false,
+    "nfServiceList": {},
+    "nfProfileChangesInd": false,
+    "defaultNotificationSubscriptions": [
+        {
+        "notificationType": "N1_MESSAGES",
+        "callbackUri": "string",
+        "interPlmnCallbackUri": "string",
+        "n1MessageClass": "string",
+        "n2InformationClass": "string",
+        "versions": [
+            "string"
+        ],
+        "binding": "string",
+        "acceptedEncoding": "string",
+        "supportedFeatures": "string",
+        "serviceInfoList": {}
+        }
+    ],
+    "lmfInfo": {
+        "servingClientTypes": [
+        "string"
+        ],
+        "lmfId": "string",
+        "servingAccessTypes": [
+        "string"
+        ],
+        "servingAnNodeTypes": [
+        "GNB",
+        "string"
+        ],
+        "servingRatTypes": [
+        "string"
+        ],
+        "taiList": [
+        "string"
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ],
+        "supportedGADShapes": [
+        "string"
+        ],
+        "pruExistenceInfo": {
+        "taiList": [
+            "string"
+        ],
+        "taiRangeList": [
+            {
+            "plmnId": "string",
+            "tacRangeList": [
+                {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+                },
+                {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+                }
+            ],
+            "nid": "string"
+            }
+        ]
+        }
+    },
+    "gmlcInfo": {
+        "servingClientTypes": [
+        "string"
+        ],
+        "gmlcNumbers": [
+        "string"
+        ]
+    },
+    "nfSetIdList": [
+        "string"
+    ],
+    "servingScope": [
+        "string"
+    ],
+    "lcHSupportInd": false,
+    "olcHSupportInd": false,
+    "nfSetRecoveryTimeList": {},
+    "serviceSetRecoveryTimeList": {},
+    "scpDomains": [
+        "string"
+    ],
+    "scpInfo": {
+        "scpDomainInfoList": {},
+        "scpPrefix": "string",
+        "scpPorts": {},
+        "addressDomains": [
+        "string"
+        ],
+        "ipv4Addresses": [
+        "string"
+        ],
+        "ipv6Prefixes": [
+        "string"
+        ],
+        "ipv4AddrRanges": [
+        {
+            "start": "string",
+            "end": "string"
+        }
+        ],
+        "ipv6PrefixRanges": [
+        {
+            "start": "string",
+            "end": "string"
+        }
+        ],
+        "servedNfSetIdList": [
+        "string"
+        ],
+        "remotePlmnList": [
+        "string"
+        ],
+        "remoteSnpnList": [
+        "string"
+        ],
+        "ipReachability": "IPV4",
+        "scpCapabilities": [
+        "INDIRECT_COM_WITH_DELEG_DISC",
+        "string"
+        ]
+    },
+    "seppInfo": {
+        "seppPrefix": "string",
+        "seppPorts": {},
+        "remotePlmnList": [
+        "string"
+        ],
+        "remoteSnpnList": [
+        "string"
+        ],
+        "n32Purposes": [
+        "string"
+        ]
+    },
+    "vendorId": "string",
+    "supportedVendorSpecificFeatures": {},
+    "aanfInfoList": {},
+    "5gDdnmfInfo": {
+        "plmnId": "string"
+    },
+    "mfafInfo": {
+        "servingNfTypeList": [
+        "NRF",
+        "string"
+        ],
+        "servingNfSetIdList": [
+        "string"
+        ],
+        "taiList": [
+        "string"
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ]
+    },
+    "easdfInfoList": {},
+    "dccfInfo": {
+        "servingNfTypeList": [
+        "NRF",
+        "string"
+        ],
+        "servingNfSetIdList": [
+        "string"
+        ],
+        "taiList": [
+        "string"
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ]
+    },
+    "nsacfInfoList": {},
+    "mbSmfInfoList": {},
+    "tsctsfInfoList": {},
+    "mbUpfInfoList": {},
+    "trustAfInfo": {
+        "sNssaiInfoList": [
+        {
+            "sNssai": "string",
+            "dnnInfoList": [
+            {
+                "dnn": "string"
+            }
+            ]
+        }
+        ],
+        "afEvents": [
+        "string"
+        ],
+        "appIds": [
+        "string"
+        ],
+        "internalGroupId": [
+        "string"
+        ],
+        "mappingInd": false,
+        "taiList": [
+        "string"
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ]
+    },
+    "nssaafInfo": {
+        "supiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "internalGroupIdentifiersRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ]
+    },
+    "hniList": [
+        "string"
+    ],
+    "iwmscInfo": {
+        "msisdnRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "supiRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ],
+        "taiRangeList": [
+        {
+            "plmnId": "string",
+            "tacRangeList": [
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            },
+            {
+                "start": "string",
+                "end": "string",
+                "pattern": "string"
+            }
+            ],
+            "nid": "string"
+        }
+        ],
+        "scNumber": "string"
+    },
+    "mnpfInfo": {
+        "msisdnRanges": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ]
+    },
+    "smsfInfo": {
+        "roamingUeInd": true,
+        "remotePlmnRangeList": [
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        },
+        {
+            "start": "string",
+            "end": "string",
+            "pattern": "string"
+        }
+        ]
+    },
+    "dcsfInfoList": {},
+    "mrfInfoList": {},
+    "mrfpInfoList": {},
+    "dcmfInfoList": {}
+}
