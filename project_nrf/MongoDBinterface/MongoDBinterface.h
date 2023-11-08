@@ -47,14 +47,22 @@ public:
 
     }
 
-    void Drop(const char* database_name)
-    {
-       
-        client_ = mongocxx::client{ mongocxx::uri{"mongodb://localhost:27017"} };
-        client_[database_name].drop();
- 
-   
-    }
+    bool Drop(const char* database_name)
+ {
+    
+     client_ = mongocxx::client{ mongocxx::uri{"mongodb://localhost:27017"} };
+     try {
+         client_.database(database_name).drop(); // Удаляем базу данных
+         std::cout<<std::endl << "Database " << database_name << " deleted!" << std::endl;
+         return true; // Успешно удалено
+     }
+     catch (const std::exception& e) {
+         std::cerr << "Error whe deleting: " << e.what() << std::endl;
+         return false; // Ошибка при удалении
+     }
+    
+
+ }
 
 
     void InsertDocument(const char* database_name, const char* collection_name, const bsoncxx::document::value& document) {
