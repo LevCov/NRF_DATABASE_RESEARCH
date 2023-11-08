@@ -84,14 +84,24 @@ public:
         collection.update_one(filter, update);
     }
 
-    void DeleteDocument(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter) {
+     void DeleteDocument(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter) {
 
-        //mongocxx::instance instance{};
+     //mongocxx::instance instance{};
 
-        auto db = client_[database_name];
-        auto collection = db[collection_name];
-        collection.delete_one(filter);
-    }
+     auto db = client_[database_name];
+     auto collection = db[collection_name];
+     collection.delete_one(filter);
+
+     bsoncxx::stdx::optional<bsoncxx::document::value> result = collection.find_one(filter);
+
+     if (result) {
+         std::cout << "Doc not deleted." << std::endl;
+         //std::cout << bsoncxx::to_json(result.value()) << std::endl; // Вывести найденный документ
+     }
+     else {
+         std::cout << "Doc deleted." << std::endl;
+     }
+ }
 
 
 
