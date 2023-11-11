@@ -5,19 +5,16 @@ project(RedisBenchmarkTest VERSION 0.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(TEST_TARGET utest)
+set(BENCH_TARGET bench)
 
-enable_testing()
+# add_subdirectory(benchmark)
 
-add_subdirectory(googletest)
-
-add_executable(utest
+add_executable(bench
     ../src/redis_find.cpp
-    test_code/redis_test.cpp
-    test_main.cpp
+    bench_main.cpp
 )
 
-target_include_directories(utest
+target_include_directories(bench
     PUBLIC
         ${PROJECT_SOURCE_DIR}
     PRIVATE
@@ -27,20 +24,16 @@ target_include_directories(utest
 )
 
 
-find_package(GTest REQUIRED)
 find_package(hiredis REQUIRED)
 find_package(redis++ REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(benchmark REQUIRED)
 
-target_link_libraries(utest
+target_link_libraries(bench
     PRIVATE
         nlohmann_json::nlohmann_json
         hiredis::hiredis
         redis++::redis++
-        GTest::gtest
-        GTest::gtest_main
-        GTest::gmock_main
+        benchmark::benchmark
         pthread
 )
-include(GoogleTest)
-gtest_discover_tests(utest)

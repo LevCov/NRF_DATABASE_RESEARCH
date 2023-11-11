@@ -1,6 +1,6 @@
 [
     {
-        "nfInstanceId": "string",
+        "nfInstanceId": "nf1",
         "nfInstanceName": "string",
         "nfType": "NRF",
         "nfStatus": "REGISTERED",
@@ -1220,10 +1220,10 @@
         "mrfInfoList": {},
         "mrfpInfoList": {},
         "dcmfInfoList": {}
-    },
-    {
-        "nfInstanceId": "string",
-        "nfInstanceName": "string",
+      },
+      {
+        "nfInstanceId": "nf2",
+        "nfInstanceName": "nf2",
         "nfType": "NRF",
         "nfStatus": "REGISTERED",
         "collocatedNfInstances": [
@@ -2442,5 +2442,5 @@
         "mrfInfoList": {},
         "mrfpInfoList": {},
         "dcmfInfoList": {}
-    }
+      }
 ]

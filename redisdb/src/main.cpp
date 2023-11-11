@@ -13,17 +13,20 @@ int main() {
 
     try {
 
-        auto v = redis->find("NRF");
+        // auto v = redis->find("NRF");
 
-        for (const auto& i : v) {
-            std::cout << *i << " ";
-            auto str = redis->hget(*i, "data");
-            // std::cout << *str;
-            // json profile = json::parse(*str);
-            // std::cout << std::setw(4) << profile.flatten() << "\n\n";
-        }
+        // for (const auto& i : v) {
+        //     std::cout << *i << " ";
+        //     auto str = redis->hget(*i, "data");
+        //     // std::cout << *str;
+        //     // json profile = json::parse(*str);
+        //     // std::cout << std::setw(4) << profile.flatten() << "\n\n";
+        // }
 
-        redis->loadingDB("../data/data_model.json");
+        // redis->loadingDB("../data/data_model.json");
+
+        redis->createDB("../data/data_model.json", 3, "NFR");
+
         // redis.flushdb();
         // redis.flushdb();
 

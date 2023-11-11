@@ -25,17 +25,17 @@ using OptionalString = sw::redis::OptionalString;
 // CRUD redefined from the redis++ library.
 //===----------------------------------------------------------------------===//
 
-// set method.
+// set method, return bool.
 bool RedisInterface::create(const StringView &key, const StringView &val) {
     return set(key, val);
 }
 
-// get method.
+// get method, return OptionalString.
 OptionalString RedisInterface::read(const StringView &key) {                
     return get(key);
 }        
 
-// del method.
+// del method, return long long.
 long long RedisInterface::del(const StringView &key) {                     
     return Redis::del(key);
 }
@@ -57,73 +57,41 @@ std::vector<OptionalString> RedisInterface::find(
 
 // loading data bate from the json by the json path.
 void RedisInterface::loadingDB(const char* config_path) {
-
     std::ifstream cf(config_path); 
-    json instances = json::parse(cf);  
 
-    for (auto& profile : instances) {      
-        std::string nfInstanceId = profile["nfInstanceId"];
-        std::string nfType = profile["nfType"];
-        (*this).hset(nfInstanceId, "nfType", nfType);
-        (*this).hset(nfInstanceId, "data", profile.dump(4));
+    if (cf.is_open()) {
+        json instances = json::parse(cf);  
+
+        for (auto& profile : instances) {      
+            std::string nfInstanceId = profile["nfInstanceId"];
+            std::string nfType = profile["nfType"];
+            (*this).hset(nfInstanceId, "nfType", nfType);
+            (*this).hset(nfInstanceId, "data", profile.dump(4));
+        }
+
+        cf.close();   
     }
 }
 
-/// last code.
-
-// shows whether config file is included with keys and values in nfprofile.
-void RedisInterface::find_code(json& config_file, 
-                json& profile, 
-                std::vector<json> &match_nfprofiles) {
-    bool flag = true;
-    for (auto& el : config_file.items()) {    
-        if (flag *= profile.contains(el.key()))
-            flag *= profile[el.key()] == config_file[el.key()];
-        if (!flag)
-            break;
-    }
-    if (flag) {
-        match_nfprofiles.push_back(profile);
-    }
-}
-
-// shows whether json config file is included with keys and values 
-// in json nfprofile.
-std::vector<json> RedisInterface::findJ2J(json nfinstance, json config_file) {
-    std::vector<json> match_nfprofiles;    
-
-    // !!manually var. 90 is the keys in the nfprofile.
-    if (nfinstance.begin().value().size() == 90) {       // for nfinstance.
-        for (auto& profile : nfinstance) {
-            find_code(config_file, profile, match_nfprofiles);
-        }
-    } else {                                             // for nfprofile.
-        find_code(config_file, nfinstance, match_nfprofiles);
-    }
-    
-    return match_nfprofiles;
-}  
-
-
-// the same as the previous one, only we pass it by path.
-std::vector<json> RedisInterface::findP2P(const char* nfinstance_path,
-                                          const char* config_path) {
-    std::vector<json> match_nfprofiles;
-
-    std::ifstream f(nfinstance_path);
+// creating nfprofiles. 14064 byte or ~ 0,014 Mb per key.
+void RedisInterface::createDB(const char* config_path, 
+                              int n, 
+                              std::string nfType) {
     std::ifstream cf(config_path); 
 
-    json nfinstance = json::parse(f);
-    json config_file = json::parse(cf);    
+    if (cf.is_open()) {
+        json instances = json::parse(cf);  
 
-    // !!manually var. 90 is the keys in the nfprofile.
-    if (nfinstance.begin().value().size() == 90) {
-        for (auto& profile : nfinstance) {
-            find_code(config_file, profile, match_nfprofiles);
+        for (auto& profile : instances) {  // for 1 of 1. 
+            for (int i = 0; i < n; ++i) {
+                const std::string nfInstanceId = std::to_string(i);
+                profile["nfInstanceId"] = nfInstanceId;
+                profile["nfType"] = nfType;
+                (*this).hset(nfInstanceId, "nfType", nfType);
+                (*this).hset(nfInstanceId, "data", profile.dump());
+            }
         }
-    } else {
-        find_code(config_file, nfinstance, match_nfprofiles);
-    }
 
-    return match_nfprofiles;
-}  
+        cf.close();   
+    }
+}
