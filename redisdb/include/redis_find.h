@@ -40,5 +40,5 @@ public:
     void loadingDB(const char* config_path);
 
     // creating nfprofiles.
-    void createDB(const char* config_path, int n, std::string nfType);
+    void createDB(const char* config_path, int sizedb, std::string nfType);
 };
