@@ -1,6 +1,5 @@
 #include <benchmark/benchmark.h>
 
-
 #include "../include/redis_find.h"
 
 auto redis = std::make_unique<RedisInterface>("tcp://127.0.0.1:6379");
@@ -51,7 +50,6 @@ static void BM_createDB_1(benchmark::State& state) {
     redis->flushdb();
 }
 BENCHMARK(BM_createDB_1);
-
 
 static void BM_find_1(benchmark::State& state) {
     redis->flushdb();
