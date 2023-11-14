@@ -39,6 +39,6 @@ public:
     // loading nfprofiles in Redis data base.
     void loadingDB(const char* config_path);
 
-    // creating nfprofiles.
+    // creating database with sizedb nfprofiles.
     void createDB(const char* config_path, int sizedb, std::string nfType);
 };
