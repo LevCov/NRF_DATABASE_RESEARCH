@@ -103,7 +103,27 @@ public:
      }
  }
 
+auto FindDocument(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter) {
 
+    //mongocxx::instance instance{};
+
+    auto db = client_[database_name];
+    auto collection = db[collection_name];
+
+    bsoncxx::stdx::optional<bsoncxx::document::value> result = collection.find_one(filter);
+    
+    if (result) {
+
+        std::cout << "doc fnded";
+
+        return result;
+
+    }
+    else {
+        std::cout << "doc not fnded";
+    }
+    
+}
 
 
 
