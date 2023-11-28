@@ -9,13 +9,9 @@ using OptionalString = sw::redis::OptionalString;
 
 int main() {
     
-    std::cout << "Hello, World!";
+    auto redis = std::make_unique<RedisInterface>("tcp://127.0.0.1:6379");
 
-    try {
-        auto redis = std::make_unique<RedisInterface>("tcp://127.0.0.1:6379");
-    } catch (const std::exception& e) {
-        std::cerr << "Ошибка: " << e.what() << std::endl;
-    }
+    std::cout << "Hello, World!";
 
     return 0;
 }
