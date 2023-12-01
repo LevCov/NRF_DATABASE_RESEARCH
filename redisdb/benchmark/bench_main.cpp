@@ -6,6 +6,8 @@ using json = nlohmann::json;
 
 auto redis = std::make_unique<RedisInterface>("tcp://127.0.0.1:6379");
 
+// --benchmark_report_aggregates_only=true
+
 //===----------------------------------------------------------------------===//
 // CRUD methods benchmark.
 //===----------------------------------------------------------------------===//
@@ -88,157 +90,59 @@ static void BM_HDel(benchmark::State& state) {
 }
 BENCHMARK(BM_HDel)->Iterations(1)->Repetitions(100000);
 
-//===----------------------------------------------------------------------===//
+// ===----------------------------------------------------------------------===//
 // benchmarks for general methods.
-//===----------------------------------------------------------------------===//
+// ===----------------------------------------------------------------------===//
 
-//===**********************************************************************===//
-// group benchmarks of find method.
+// ===**********************************************************************===//
+// benchmark of find method.
 // size:
-// [1, 10, 100, 1000, 10'000, 20'000, 40'000, 60'000, 80'000, 100'000, 400'000]
-//===**********************************************************************===//
+// [10'000, 20'000, 40'000, 60'000, 80'000, 100'000]
+// ===**********************************************************************===//
 
-static void BM_find_1(benchmark::State& state) {
+const std::vector<int64_t> values_find = { 10'000, 20'000, 40'000, 
+                                           60'000, 80'000, 100'000 };
+
+static void BM_find(benchmark::State& state) {
     redis->flushdb();
-    redis->createUniDB("../data_model.json", 1);
+    int n = state.range(0);
+    redis->createUniDB("../data_model.json", n);
     for (auto _ : state) {
         redis->find("NRF");
     }
     redis->flushdb();
 }
-BENCHMARK(BM_find_1)->Iterations(1000)->Repetitions(20);
-
-static void BM_find_10(benchmark::State& state) {
-    redis->flushdb();
-    redis->createUniDB("../data_model.json", 10);
-    for (auto _ : state) {
-        redis->find("NRF");
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_find_10)->Iterations(1000)->Repetitions(20);
-
-static void BM_find_100(benchmark::State& state) {
-    redis->flushdb();
-    redis->createUniDB("../data_model.json", 100);
-    for (auto _ : state) {
-        redis->find("NRF");
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_find_100)->Iterations(1000)->Repetitions(20);
-
-static void BM_find_1000(benchmark::State& state) {
-    redis->flushdb();
-    redis->createUniDB("../data_model.json", 1000);
-    for (auto _ : state) {
-        redis->find("NRF");
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_find_1000)->Iterations(100)->Repetitions(5);
-
-static void BM_find_10000(benchmark::State& state) {
-    redis->flushdb();
-    redis->createUniDB("../data_model.json", 10000);
-    for (auto _ : state) {
-        redis->find("NRF");
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_find_10000)->Iterations(25)->Repetitions(5);
-
-static void BM_find_20000(benchmark::State& state) {
-    redis->flushdb();
-    redis->createUniDB("../data_model.json", 20000);
-    for (auto _ : state) {
-        redis->find("NRF");
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_find_20000)->Iterations(25)->Repetitions(5);
-
-static void BM_find_40000(benchmark::State& state) {
-    redis->flushdb();
-    redis->createUniDB("../data_model.json", 40000);
-    for (auto _ : state) {
-        redis->find("NRF");
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_find_40000)->Iterations(25)->Repetitions(5);
-
-static void BM_find_60000(benchmark::State& state) {
-    redis->flushdb();
-    redis->createUniDB("../data_model.json", 60000);
-    for (auto _ : state) {
-        redis->find("NRF");
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_find_60000)->Iterations(10)->Repetitions(5);
-
-static void BM_find_80000(benchmark::State& state) {
-    redis->flushdb();
-    redis->createUniDB("../data_model.json", 80000);
-    for (auto _ : state) {
-        redis->find("NRF");
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_find_80000)->Iterations(10)->Repetitions(5);
-
-static void BM_find_100000(benchmark::State& state) {
-    redis->flushdb();
-    redis->createUniDB("../data_model.json", 100000);
-    for (auto _ : state) {
-        redis->find("NRF");
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_find_100000)->Iterations(10)->Repetitions(5);
+BENCHMARK(BM_find)->Iterations(5)
+                  ->Repetitions(3)
+                  ->Apply([](auto* b) {
+                        for (int64_t value : values_find) {
+                            b->Arg(value);
+                        }
+                    });
 
 //===**********************************************************************===//
-/// group benchmarks of find method.
+/// benchmark of createUniDB method.
 /// size:
-/// [1, 1000, 10'000, 100'000]
+/// [ 10'000, 20'000, 30'000 ]
 //===**********************************************************************===//
 
-static void BM_createUniDB_1(benchmark::State& state) {
-    redis->flushdb();
-    for (auto _ : state) {
-        redis->createUniDB("../data_model.json", 1);
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_createUniDB_1)->Iterations(100)->Repetitions(10);
+const std::vector<int64_t> values_create_db = { 10'000, 20'000, 30'000 };
 
-static void BM_createUniDB_1000(benchmark::State& state) {
+static void BM_createUniDB(benchmark::State& state) {
     redis->flushdb();
+    int n = state.range(0);
     for (auto _ : state) {
-        redis->createUniDB("../data_model.json", 1000);
+        redis->createUniDB("../data_model.json", n);
     }
     redis->flushdb();
 }
-BENCHMARK(BM_createUniDB_1000)->Iterations(100)->Repetitions(10);
-
-static void BM_createUniDB_10000(benchmark::State& state) {
-    redis->flushdb();
-    for (auto _ : state) {
-        redis->createUniDB("../data_model.json", 10000);
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_createUniDB_10000)->Iterations(10)->Repetitions(5);
-
-static void BM_createUniDB_100000(benchmark::State& state) {
-    redis->flushdb();
-    for (auto _ : state) {
-        redis->createUniDB("../data_model.json", 100000);
-    }
-    redis->flushdb();
-}
-BENCHMARK(BM_createUniDB_100000)->Iterations(5)->Repetitions(5);
+BENCHMARK(BM_createUniDB)->Iterations(10)
+                         ->Repetitions(5)
+                         ->Apply([](auto* b) {
+                               for (int64_t value : values_create_db) {
+                                   b->Arg(value);
+                                }
+                           });
 
 //===**********************************************************************===//
 // benchmarks for methods of combination.
