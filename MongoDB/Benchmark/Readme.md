@@ -71,7 +71,6 @@
 У всех документов найденных документов nfType поменялся на FINDED.
 
 
-
 ![image](https://github.com/LevCov/NRF_DATABASE_RESEARCH/assets/100800333/f6c6af38-cce2-4b59-9585-0b06f25845ff)
 
 
