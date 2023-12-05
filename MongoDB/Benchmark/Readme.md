@@ -1,6 +1,6 @@
 **Тестирование созданныx бенчмарков**
 
-1.Запуск каждый отедльно.
+1.Запуск каждого отедльно.
 
 1.1 Запуск **createUniDB_1000()**.
 Описание:
@@ -22,7 +22,7 @@
 
 
 
-
+   
 
 
 
@@ -53,4 +53,27 @@
 ![image](https://github.com/LevCov/NRF_DATABASE_RESEARCH/assets/100800333/ff92cc44-e9f0-4936-bcf3-9ebc3d13d76b)
 
 
+
+
+
+
+1.3 Запуск **BM_FindDocument_1000()**.
+ Описание:
+Бенчмарк поиска документа по ключ - значение. 
+Результат работы FindDocument передается в переменную result.Документы ищу по фильтру nfType: UPDATED.  Далее result преобрузуется в фильтр для метода UpdateOne,
+с помощью которого я помечаю(поменялся nfType на FINDED) найденные документы.
+
+
+Результат:
+
+![image](https://github.com/LevCov/NRF_DATABASE_RESEARCH/assets/100800333/32c6af8e-d300-45e9-850f-c717d781a475)
+
+У всех документов найденных документов nfType поменялся на FINDED.
+
+
+
+![image](https://github.com/LevCov/NRF_DATABASE_RESEARCH/assets/100800333/f6c6af38-cce2-4b59-9585-0b06f25845ff)
+
+
+![image](https://github.com/LevCov/NRF_DATABASE_RESEARCH/assets/100800333/7adbcad3-96f0-4966-b488-6e53b22f5046)
 
