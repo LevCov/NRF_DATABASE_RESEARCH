@@ -1,5 +1,5 @@
 #include "benchmark/benchmark.h"
-#include "C:\Users\levax\source\repos\ConsoleApplication1\ConsoleApplication1\MongoDBConnector.h"
+#include "MongoDBConnector.h"
 
 
 #include <random>
