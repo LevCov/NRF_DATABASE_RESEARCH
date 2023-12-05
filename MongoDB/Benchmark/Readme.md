@@ -14,6 +14,7 @@
  Результат:
 
  ![image](https://github.com/LevCov/NRF_DATABASE_RESEARCH/assets/100800333/9ca58cc5-6c71-489c-bbd8-bbaa2798ce34)
+  
   Создалась база данных Unidb с коллекцией Unicol в которой находится 1000 документов на основе data_model с измененными nfType.
 
   ![image](https://github.com/LevCov/NRF_DATABASE_RESEARCH/assets/100800333/369059de-77c4-4aa9-8eab-460a383cfc70)
