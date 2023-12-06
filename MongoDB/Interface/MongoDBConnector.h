@@ -18,11 +18,16 @@
 class MongoDBConnector {
 public:
     MongoDBConnector(const char* uri_string) {
-
+     
+        //Конструктор задает uri для подлкючения к базе данных 
         client_ = mongocxx::client{ mongocxx::uri{uri_string} };
         
     };
 
+
+
+    //Метод Create() создает базу данных и коллекцию 
+   // Принимает на вход имя новой базы данных и имя коллекции 
 
     void Create(const char* database_name, const char* collection_name) {
 
@@ -52,6 +57,9 @@ public:
 
     }
 
+
+    // Метод Drop() удаляет базу данных 
+   // Принимает на вход имя базы данных 
     bool Drop(const char* database_name)
     {
        
@@ -69,7 +77,8 @@ public:
    
     }
 
-
+     // Метод InsertDocument вставляет документ в коллекцию конкретной базы данных. 
+   // Принимает на вход имя базы данных, имя коллекции и документ для вставки 
     void InsertDocument(const char* database_name, const char* collection_name, const bsoncxx::document::value& document) {
 
         //mongocxx::instance instance{};
@@ -80,7 +89,8 @@ public:
         
     }
 
-   
+    // Метод UpdateOne() обновляет один документ в коллекции базы данных. 
+   // Принимает на вход имя базы данных, имя коллекции, фильтр для поиска документа и новое ключ - значение для обновления 
     void UpdateOne(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter, const bsoncxx::document::view_or_value& update) {
         
         
@@ -103,6 +113,9 @@ public:
         */
     }
 
+
+     // Метод UpdateMnay() обновляет все документы соответствующие фильтру в коллекции базы данных. 
+   // Принимает на вход имя базы данных, имя коллекции, фильтр для поиска документа и новое ключ - значение для обновления 
     void UpdateMany(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter, const bsoncxx::document::view_or_value& update) {
 
 
@@ -125,7 +138,8 @@ public:
         */
     }
 
-
+    // Метод DeleteDocument() удаляет документ по заданному фильтру в коллекции  базы данных. 
+   // Принимает на вход имя базы данных, имя коллекции, фильтр для поиска документа 
     void DeleteDocument(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter) {
 
         //mongocxx::instance instance{};
@@ -146,9 +160,13 @@ public:
         */
     }
 
+
+    // Метод FindDocument() ищет документ по фильтру в коллекции базы данных.
+    // Принимает на вход имя базы данных, имя коллекции, фильтр для поиска документа.
+    //Возвращает опциональное значение, которое может содержать документ (если он был найден) или быть пустым (если ничего не было найдено).
+
     auto FindDocument(const char* database_name, const char* collection_name, const bsoncxx::document::view_or_value& filter) {
 
-        //mongocxx::instance instance{};
 
         auto db = client_[database_name];
         auto collection = db[collection_name];
