@@ -52,7 +52,40 @@ else
 connector.InsertDocument(database_name, collection_name, doc);  
 
 //-------------------------------------------------/
+//Пример как пользоваться методом UpdateOne();
+
+//Создание фильтра для поиска документа. 
+bsoncxx::builder::stream::document filter{};
+filter << "key" << "value";
+
+
+//Создание документа где где определено ключ - новое значение.
+bsoncxx::builder::stream::document update{};
+update << "$set" << bsoncxx::builder::stream::open_document << "key" << "new_value" << bsoncxx::builder::stream::close_document;
+
+    
+connector.UpdateOne(database_name, collection_name, filter.view(), update.view());  
+
+
+  
 //-------------------------------------------------/
+//Пример как пользоваться методом UpdateMany();
+
+//Создание фильтра для поиска документа. 
+bsoncxx::builder::stream::document filter{};
+filter << "key" << "value";
+
+
+//Создание документа где где определено ключ - новое значение.
+bsoncxx::builder::stream::document update{};
+update << "$set" << bsoncxx::builder::stream::open_document << "key" << "new_value" << bsoncxx::builder::stream::close_document;
+
+    
+connector.UpdateMany(database_name, collection_name, filter.view(), update.view());  
+
+  
+
+  
 //-------------------------------------------------/
 //-------------------------------------------------/
 //-------------------------------------------------/
