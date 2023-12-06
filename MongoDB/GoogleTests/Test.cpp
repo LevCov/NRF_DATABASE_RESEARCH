@@ -11,10 +11,15 @@ protected:
     void TearDown() override {
         // Очистка после тестирования, если необходимо
     }
-
+    //инициализация и подключение базы данных
     MongoDBConnector connector{ "mongodb://localhost:27017" };
 };
 
+/////////////////////////////////////////////////////
+/*
+Тест на создание базы данных и коллекции.
+
+*/
 
 
 TEST_F(MongoDBConnectorTest, Create) {
@@ -29,7 +34,12 @@ TEST_F(MongoDBConnectorTest, Create) {
     // Можно использовать другие методы MongoDBConnector для этой проверки
 }
 
+/////////////////////////////////////////////////////
+/*
 
+Тест на удаление базы данных.
+
+*/
 
 TEST_F(MongoDBConnectorTest, Drop) {
     const char* database_name = "test_db1";
@@ -42,11 +52,17 @@ TEST_F(MongoDBConnectorTest, Drop) {
 }
 
 
+/////////////////////////////////////////////////////
+/*
+
+Тест на вставку data_model в базу данных.
+
+*/
+
 TEST_F(MongoDBConnectorTest, InsertDocument) {
     const char* database_name = "test_db2";
     const char* collection_name = "test_collection";
-    //bsoncxx::document::value doc_value = bsoncxx::from_json("{\"key\": \"value\"}");
-
+    
     std::string jsonContent;
     std::ifstream jsonFile("data_model.json");
     if (jsonFile.is_open()) {
@@ -68,6 +84,15 @@ TEST_F(MongoDBConnectorTest, InsertDocument) {
     // Можно использовать другие методы MongoDBConnector для этой проверки
 }
 
+/////////////////////////////////////////////////////
+/*
+
+Тест на редактирование data_model в базе данных.
+Фильтр на поиск документа 0.nfType - NRF.
+Изменение nfInstanceId со занчения string на 01234.
+
+*/
+
 
 TEST_F(MongoDBConnectorTest, UpdateDocument) {
     const char* database_name = "test_db2";
@@ -80,11 +105,20 @@ TEST_F(MongoDBConnectorTest, UpdateDocument) {
     
     update << "$set" << bsoncxx::builder::stream::open_document << "0.nfInstanceId" << "01234" << bsoncxx::builder::stream::close_document;
     bsoncxx::builder::stream::document filter_{};
-    filter_ << "0.nfInstanceId" << "01234";
-
+    
     connector.UpdateOne(database_name, collection_name, filter.view(), update.view());
 
 }
+
+
+
+/////////////////////////////////////////////////////
+/*
+
+Тест на удаление data_model в базе данных.
+Фильтр на поиск документа 0.nfInstanceId - 01234.
+
+*/
 
 
 TEST_F(MongoDBConnectorTest, DeleteDocument) {
@@ -92,11 +126,10 @@ TEST_F(MongoDBConnectorTest, DeleteDocument) {
     const char* collection_name = "test_collection";
 
     bsoncxx::builder::stream::document filter{};
-    filter << "key" << "value";
+    filter << "0.nfInstanceId"" << "01234";
 
     bsoncxx::builder::stream::document update{};
-    update << "$set" << bsoncxx::builder::stream::open_document << "0.nfInstanceId" << "01234" << bsoncxx::builder::stream::close_document;
-
+   
     connector.DeleteDocument(database_name, collection_name, filter.view());
 
 }
