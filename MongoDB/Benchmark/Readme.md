@@ -77,8 +77,7 @@
 ![image](https://github.com/LevCov/NRF_DATABASE_RESEARCH/assets/100800333/7adbcad3-96f0-4966-b488-6e53b22f5046)
 
 
-**1.Запуск всех вместе.
-**
+**1.Запуск всех вместе.**
 
 
 ![image](https://github.com/LevCov/NRF_DATABASE_RESEARCH/assets/100800333/47efcaf5-330c-41a2-8fb8-40d58377f903)
