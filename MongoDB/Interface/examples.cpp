@@ -83,13 +83,33 @@ update << "$set" << bsoncxx::builder::stream::open_document << "key" << "new_val
     
 connector.UpdateMany(database_name, collection_name, filter.view(), update.view());  
 
+//-------------------------------------------------/
+//Пример как пользоваться методом DeleteDocument();
+
+//Создание фильтра для поиска документа. 
+bsoncxx::builder::stream::document filter{};
+filter << "key" << "value";
+
+
+connector.DeleteDocument(database_name, collection_name, filter.view());
+    
+//-------------------------------------------------/
+//Пример как пользоваться методом FindDocument();
+
+//Создание фильтра для поиска документа.  
+bsoncxx::builder::stream::document filter{};
+filter << "key"<< "value";    
+
+//Создание переменной где будет храниться результат выполнения метода  FindDocument().
+bsoncxx::stdx::optional<bsoncxx::document::value> result
+
+//Выполнение метода FindDocument().
+
+result = connector.FindDocument(database_name, collection_name, filter.view());  
   
 
-  
 //-------------------------------------------------/
-//-------------------------------------------------/
-//-------------------------------------------------/
-/-------------------------------------------------/
+
 
 
 
