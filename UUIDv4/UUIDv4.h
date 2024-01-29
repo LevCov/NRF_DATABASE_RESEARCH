@@ -8,12 +8,12 @@
 
 
 
-    // Encaasulate the genaeration of a Version 4 UUID object
-    // A Version 4 UUID is a universally unique identifier that is generated using random numbers.
+   
+   
     class UUID
     {
     public:
-        // Factory method for creating UUID object.
+        // Метод для создания объекта UUID.
         static UUID New()
         {
             UUID uuid;
@@ -32,10 +32,10 @@
             return uuid;
         }
 
-        // Returns UUID as formatted string
+        // Возвращает UUID в виде отформатированной строки
         std::string String()
         {
-            // Formats to "0065e7d7-418c-4da4-b4d6-b54b6cf7466a"
+            // Форматы для "0065e7d7-418c-4da4-b4d6-b54b6cf7466a"
             char buffer[256] = { 0 };
             std::snprintf(buffer, 255,
                 "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
