@@ -21,7 +21,7 @@ int main() {
     const char* collection_name = "ColName";
 
 
-    //Создание 10 различных профилей для тестирования производительности базы данных
+    //Создание 10 различных профилей для дальнейшего тестирования производительности базы данных
     N = 10;
     for (int i = 0; i < N;i++) {
         auto doc = bsoncxx::from_json(CreateProfile().GetString()); // Возвращаемое значение CreateProfile() преобразуется в string.
