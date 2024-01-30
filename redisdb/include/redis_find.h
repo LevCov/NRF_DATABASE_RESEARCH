@@ -25,41 +25,47 @@ public:
     // CRUD redefined from the redis++ library.
     //===------------------------------------------------------------------===//
 
-    // create method.
-    bool create(const StringView &key, const StringView &val);
+    /// @brief Set hash field to value.
+    /// @param key Key where the hash is stored.
+    /// @param field Field.
+    /// @param val Value.
+    void create(const StringView &key, 
+                const StringView &field, 
+                const StringView &dataField);
 
-    // create method for hash.
-    bool hcreate(const StringView &key, 
-                 const StringView &field, 
-                 const StringView &dataField);
+    /// @brief Get the value of the given field.
+    /// @param key Key where the hash is stored.
+    /// @param field Field.
+    /// @return Value of the given field.
+    OptionalString hread(const StringView &key, 
+                         const StringView &field);
 
-    // get method.
-    OptionalString read(const StringView &key);
+    /// @brief Set hash field to value, if not exist.
+    /// @param key Key where the hash is stored.
+    /// @param field Field.
+    /// @param val Value.
+    /// @note If field does not exist, `update` does nothing.
+    void update(const StringView &key, 
+                const StringView &field, 
+                const StringView &dataField);
 
-    // get method for hash.
-    OptionalString hread(const StringView &key, const StringView &field);
-
-    // update method.
-    bool update(const StringView &key, const StringView &val);
-
-    // update method.
-    bool hupdate(const StringView &key, 
-                 const StringView &field, 
-                 const StringView &dataField);
-
-    // del method.
-    long long del(const StringView &key);
-
-    // del method for hash.
-    long long hdel(const StringView &key, const StringView &field);                   
+    /// @brief Remove the given field from hash.
+    /// @param key Key where the hash is stored.
+    /// @param field Field to be removed.
+    void del(const StringView &key, const StringView &field);
 
     //===------------------------------------------------------------------===//
     // general methods.
     //===------------------------------------------------------------------===//
 
-    // return nfprofile by nftype field.
+    /// @brief Find nfprofile by nftype field.
+    /// @param key Key where the hash is stored.
+    /// @param field Field to be removed.
+    /// @return std::vector<OptionalString> of found keys.
     std::vector<OptionalString> find(const StringView &nfTypeSearch);
-
-    // creating DB with uniform dist nfprofiles.
+    
+    /// @brief Сreating DB with uniform dist nfprofiles.
+    /// @param config_path Path to file with template.
+    /// @param field Size of database.
     void createUniDB(const char* config_path, const int n);
 };

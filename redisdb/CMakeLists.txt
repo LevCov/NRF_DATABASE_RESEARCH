@@ -30,10 +30,12 @@ PRIVATE
 find_package(hiredis REQUIRED)
 find_package(redis++ REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(uuid_v4 REQUIRED)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         nlohmann_json::nlohmann_json
         hiredis::hiredis
         redis++::redis++
+        uuid_v4::uuid_v4
 )
