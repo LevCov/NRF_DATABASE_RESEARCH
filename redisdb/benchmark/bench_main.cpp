@@ -51,7 +51,7 @@ BENCHMARK(BM_Read)->Iterations(100)
 
 // static void BM_Update(benchmark::State& state) {
 //     redis->flushdb();
-//     int n = state.range(0);
+//     int n = state.range(0);benchmark/bench_main.cpp
 //     redis->createUniDB("data_model.json", n);
 //     for (auto _ : state) {
 //         redis->update("test_create_key", "nfType", "test_create_val_new");
