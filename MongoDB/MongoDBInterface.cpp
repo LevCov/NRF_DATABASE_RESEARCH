@@ -41,10 +41,7 @@ void MongoDBInterface::del(const bsoncxx::document::view_or_value& filter) {
 }
 
 mongocxx::cursor MongoDBInterface::find(const bsoncxx::document::view_or_value& filter){
-    mongocxx::cursor result = collect.find(filter);/*
-    if(result.begin() == result.end()){
-        std::cout << "There are no matches" << std::endl;
-    }*/
+    mongocxx::cursor result = collect.find(filter);
     return result;
 }
 

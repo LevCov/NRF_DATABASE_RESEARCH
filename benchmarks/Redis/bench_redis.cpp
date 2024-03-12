@@ -110,7 +110,7 @@ const std::vector<int64_t> values_find = { 10'000, 20'000, 40'000,
 static void BM_find(benchmark::State& state) {
     redis.conn->flushdb();
     int n = state.range(0);
-    redis.createUniDB("./data_model.json", n);
+    redis.createUniDB("/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/benchmarks/data_model.json", n);
     for (auto _ : state) {
         redis.find("NRF");
     }
@@ -129,7 +129,7 @@ BENCHMARK(BM_find)->Iterations(5)
 /// size:
 /// [ 10'000, 20'000, 30'000 ]
 //===**********************************************************************===//
-
+/*
 const std::vector<int64_t> values_create_db = { 10'000, 20'000, 30'000 };
 
 static void BM_createUniDB(benchmark::State& state) {
@@ -147,7 +147,7 @@ BENCHMARK(BM_createUniDB)->Iterations(10)
                                    b->Arg(value);
                                 }
                            });
-
+*/
 //===**********************************************************************===//
 // benchmarks for methods of combination.
 //===**********************************************************************===//

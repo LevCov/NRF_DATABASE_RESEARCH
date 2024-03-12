@@ -32,13 +32,13 @@ public:
     void createUniDB(const char * config_path, int n);
     
 public:
-    bool create(const bsoncxx::document::view_or_value& document);
+    bool create(const bsoncxx::document::view_or_value& document) override;
 
-    mongocxx::cursor read(const bsoncxx::document::view_or_value& read);
+    mongocxx::cursor read(const bsoncxx::document::view_or_value& read) override;
     
-    bool update(const bsoncxx::document::view_or_value& filter, const bsoncxx::document::view_or_value& update);
+    bool update(const bsoncxx::document::view_or_value& filter, const bsoncxx::document::view_or_value& update) override;
 
-    void del(const bsoncxx::document::view_or_value& filter);
+    void del(const bsoncxx::document::view_or_value& filter) override;
 
 public:
     MongoConn client;

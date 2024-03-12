@@ -77,7 +77,7 @@ static void BM_Del(benchmark::State& state) {
     }
     mongo.drop();
 }
-BENCHMARK(BM_Del)->Iterations(1)->Repetitions(100000);
+BENCHMARK(BM_Del)->Iterations(1)->Repetitions(100);
 
 // ===----------------------------------------------------------------------===//
 // benchmarks for general methods.
@@ -97,12 +97,12 @@ static void BM_find(benchmark::State& state) {
     mongo.set_db("NRF_DB");
     mongo.set_collection("NFs");
     int n = state.range(0);
-    mongo.createUniDB("./data_model.json", n);
+    mongo.createUniDB("/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/benchmarks/data_model.json", n);
     
     for (auto _ : state) {
         mongo.find(make_document(
                 kvp("nfType", "NRF")
-                ));
+            ));
     }
     mongo.drop();
 }
@@ -119,7 +119,7 @@ BENCHMARK(BM_find)->Iterations(5)
 /// size:
 /// [ 10'000, 20'000, 30'000 ]
 //===**********************************************************************===//
-
+/*
 const std::vector<int64_t> values_create_db = { 10'000, 20'000, 30'000 };
 
 static void BM_createUniDB(benchmark::State& state) {
@@ -127,34 +127,16 @@ static void BM_createUniDB(benchmark::State& state) {
     mongo.set_collection("NFs");
     int n = state.range(0);
     for (auto _ : state) {
-        mongo.createUniDB("./data_model.json", n);
+        mongo.createUniDB("/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/benchmarks/data_model.json", n);
     }
     mongo.drop();
 }
-BENCHMARK(BM_createUniDB)->Iterations(10)
-                         ->Repetitions(5)
+BENCHMARK(BM_createUniDB)->Iterations(3)
+                         ->Repetitions(3)
                          ->Apply([](auto* b) {
                                for (int64_t value : values_create_db) {
                                    b->Arg(value);
                                 }
                            });
-
-//===**********************************************************************===//
-// benchmarks for methods of combination.
-//===**********************************************************************===//
-/*
-static void BM_find_and_update_10000(benchmark::State& state) {
-    mongo.set_db("NRF_DB");
-    mongo.set_collection("NFs");
-    redis.createUniDB("/home/anx_tl/cplusplus/project_nrf/benchmarks/data_model.json", 10000);
-    std::ifstream cf("/home/anx_tl/cplusplus/project_nrf/benchmarks/data_model.json"); 
-    json instances = json::parse(cf);  
-    for (auto _ : state) {
-        redis.hupdate(*(redis.find("NRF").back()), "dataField", instances.dump());
-    }
-    cf.close();
-    mongo.drop();
-}
-BENCHMARK(BM_find_and_update_10000)->Iterations(25)->Repetitions(25);
 */
 BENCHMARK_MAIN();
