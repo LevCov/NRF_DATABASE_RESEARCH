@@ -3,9 +3,12 @@
 #include "../../RedisDB/RedisDBInterface.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <filesystem>
 
 using json = nlohmann::json;
 using StrView = sw::redis::StringView;
+
+const std::string path_dir = std::filesystem::current_path().remove_filename();
 
 RedisDBInterface redis("tcp://127.0.0.1:6379");
 
@@ -18,59 +21,59 @@ RedisDBInterface redis("tcp://127.0.0.1:6379");
 static void BM_Create(benchmark::State& state) {
     redis.conn->flushdb();
     for (auto _ : state) {
-        redis.create(std::pair<StrView,StrView>("1", "1"));
+        benchmark::DoNotOptimize(redis.create(std::pair<StrView,StrView>("1", "1")));
     }
     redis.conn->flushdb();
 }
-BENCHMARK(BM_Create)->Iterations(100000)->Repetitions(5);
+BENCHMARK(BM_Create)->Iterations(1000)->Repetitions(5);
 
 static void BM_HCreate(benchmark::State& state) {
     redis.conn->flushdb();
     for (auto _ : state) {
-        redis.hcreate("test_create_key", "nfType", "test_create_val");
+        benchmark::DoNotOptimize(redis.hcreate("test_create_key", "nfType", "test_create_val"));
     }
     redis.conn->flushdb();
 }
-BENCHMARK(BM_HCreate)->Iterations(100000)->Repetitions(5);
+BENCHMARK(BM_HCreate)->Iterations(1000)->Repetitions(5);
 
 static void BM_Read(benchmark::State& state) {
     redis.conn->flushdb();
     redis.create(std::pair<StrView,StrView>("1", "1"));
     for (auto _ : state) {
-        redis.read("1");
+        benchmark::DoNotOptimize(redis.read("1"));
     }
     redis.conn->flushdb();
 }
-BENCHMARK(BM_Read)->Iterations(100000)->Repetitions(5);
+BENCHMARK(BM_Read)->Iterations(1000)->Repetitions(5);
 
 static void BM_HRead(benchmark::State& state) {
     redis.conn->flushdb();
     redis.hcreate("test_create_key", "nfType", "test_create_val");
     for (auto _ : state) {
-        redis.hread("test_create_key", "nfType");
+        benchmark::DoNotOptimize(redis.hread("test_create_key", "nfType"));
     }
     redis.conn->flushdb();
 }
-BENCHMARK(BM_HRead)->Iterations(100000)->Repetitions(5);
+BENCHMARK(BM_HRead)->Iterations(1000)->Repetitions(5);
 
 static void BM_Update(benchmark::State& state) {
     redis.conn->flushdb();
     redis.create(std::pair<StrView,StrView>("1", "1"));
     for (auto _ : state) {
-        redis.update("1", "1");
+        benchmark::DoNotOptimize(redis.update("1", "1"));
     }
     redis.conn->flushdb();
 }
-BENCHMARK(BM_Update)->Iterations(100000)->Repetitions(5);
+BENCHMARK(BM_Update)->Iterations(1000)->Repetitions(5);
 
 static void BM_HUpdate(benchmark::State& state) {
     redis.conn->flushdb();
     for (auto _ : state) {
-        redis.hupdate("test_create_key", "nfType", "test_create_val_new");
+        benchmark::DoNotOptimize(redis.hupdate("test_create_key", "nfType", "test_create_val_new"));
     }
     redis.conn->flushdb();
 }
-BENCHMARK(BM_HUpdate)->Iterations(1)->Repetitions(100000);
+BENCHMARK(BM_HUpdate)->Iterations(1)->Repetitions(100);
 
 static void BM_Del(benchmark::State& state) {
     redis.conn->flushdb();
@@ -80,7 +83,7 @@ static void BM_Del(benchmark::State& state) {
     }
     redis.conn->flushdb();
 }
-BENCHMARK(BM_Del)->Iterations(1)->Repetitions(100000);
+BENCHMARK(BM_Del)->Iterations(1)->Repetitions(100);
 
 static void BM_HDel(benchmark::State& state) {
     redis.conn->flushdb();
@@ -91,7 +94,7 @@ static void BM_HDel(benchmark::State& state) {
     }
     redis.conn->flushdb();
 }
-BENCHMARK(BM_HDel)->Iterations(1)->Repetitions(100000);
+BENCHMARK(BM_HDel)->Iterations(1)->Repetitions(100);
 
 // ===----------------------------------------------------------------------===//
 // benchmarks for general methods.
@@ -100,19 +103,21 @@ BENCHMARK(BM_HDel)->Iterations(1)->Repetitions(100000);
 // ===**********************************************************************===//
 // benchmark of find method.
 // size:
-// [10'000, 20'000, 40'000, 60'000, 80'000, 100'000]
+// [50, 100, 250, 500]
 // ===**********************************************************************===//
 //*********************************************************===//
 
-const std::vector<int64_t> values_find = { 10'000, 20'000, 40'000, 
-                                           60'000, 80'000, 100'000 };
+const std::vector<int64_t> values_find = { 50, 100, 250, 500};
 
 static void BM_find(benchmark::State& state) {
     redis.conn->flushdb();
     int n = state.range(0);
-    redis.createUniDB("/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/benchmarks/data_model.json", n);
+    std::string path = path_dir + "../data_model.json";
+    const char *cstr = path.c_str();
+    redis.createUniDB(cstr, n);
     for (auto _ : state) {
-        redis.find("NRF");
+        //redis.find("NRF");
+        benchmark::DoNotOptimize(redis.find("NRF"));
     }
     redis.conn->flushdb();
 }
@@ -152,17 +157,29 @@ BENCHMARK(BM_createUniDB)->Iterations(10)
 // benchmarks for methods of combination.
 //===**********************************************************************===//
 
-static void BM_find_and_update_10000(benchmark::State& state) {
+static void BM_find_and_update_500(benchmark::State& state) {
     redis.conn->flushdb();
-    redis.createUniDB("/home/anx_tl/cplusplus/project_nrf/benchmarks/data_model.json", 10000);
-    std::ifstream cf("/home/anx_tl/cplusplus/project_nrf/benchmarks/data_model.json"); 
-    json instances = json::parse(cf);  
+    std::string path = path_dir + "../data_model.json";
+    const char *cstr = path.c_str();
+    redis.createUniDB(cstr, 500);
+    std::ifstream cf(cstr);
+    json instances = json::parse(cf);
     for (auto _ : state) {
-        redis.hupdate(*(redis.find("NRF").back()), "dataField", instances.dump());
+        benchmark::DoNotOptimize(redis.find("AMF"));
+        benchmark::DoNotOptimize(redis.find("SMF"));
+        benchmark::DoNotOptimize(redis.find("AMF"));
+        benchmark::DoNotOptimize(redis.find("AMF"));
+        benchmark::DoNotOptimize(redis.find("SMF"));
+        benchmark::DoNotOptimize(redis.hupdate(*(redis.find("NRF").back()), "dataField", instances.dump()));
+        benchmark::DoNotOptimize(redis.find("AMF"));
+        benchmark::DoNotOptimize(redis.find("SMF"));
+        benchmark::DoNotOptimize(redis.find("AMF"));
+        benchmark::DoNotOptimize(redis.find("SMF"));
+        benchmark::DoNotOptimize(redis.find("SMF"));
     }
     cf.close();
     redis.conn->flushdb();
 }
-BENCHMARK(BM_find_and_update_10000)->Iterations(25)->Repetitions(25);
+BENCHMARK(BM_find_and_update_500)->Iterations(5)->Repetitions(5);
 
 BENCHMARK_MAIN();
