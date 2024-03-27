@@ -19,8 +19,7 @@ using namespace std;
 using namespace rapidjson;
 
 #include "UUIDv4.h"
-#include "Interface.h"
-
+#include "MYSQLConnector.h"
 
 
 
