@@ -88,6 +88,7 @@ public:
 
     //Метод чтения из таблицы
     //Принимает на вход имя таблицы и поле в котором нужно прочитать значение
+    //Возвращает значение, которое было прочтено
     auto read(std::string table_name, std::string column_name) {
      
         
@@ -101,16 +102,13 @@ public:
         catch (sql::SQLException& e) {
             cerr << "SQL Error: " << e.what() << endl;
         }
-        while (res->next()) {
-            // Выводим только первую колонку
-            std::cout << column_name + " : " << res->getString(1) << std::endl;
-        }
-
+       
         return res;
     }
     
     //Метод поиска конкректного значения в в кокнретном поле
     //Принимает на вход имя столбца и искомое значение
+    //Возвращает таблицу в которой было найденно искомое значение
     auto find(std::string column_name, std::string searchValue) {
 
             // Создание временной таблицы для результатов поиска
