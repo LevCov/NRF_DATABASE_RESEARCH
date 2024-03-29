@@ -1,15 +1,14 @@
 #include "RocksDBInterface.h"
 #include "../UUID/UUIDv4.h"
 
-using ROCKSDB_NAMESPACE::ReadOptions;
-
-
 RocksDBInterface::RocksDBInterface(const char* url){
+    // настройка опций БД
     Options options;
     options.IncreaseParallelism();
     options.OptimizeLevelStyleCompaction();
     options.create_if_missing = true;
 
+    // создание ColumnFamily по nfType
     auto s = DB::Open(options, url, &conn);
     std::vector<std::string> nfTypes {"NRF", "UDM", "AMF", "SMF", "AUSF", 
                                           "NEF", "PCF", "SMSF", "NSSF", "UDR", 
@@ -27,6 +26,7 @@ RocksDBInterface::RocksDBInterface(const char* url){
 
     std::vector<ColumnFamilyDescriptor> column_family;
 
+    // объявление default ColumnFamily
     column_family.push_back(ColumnFamilyDescriptor(
         ROCKSDB_NAMESPACE::kDefaultColumnFamilyName, ColumnFamilyOptions()
     ));
@@ -35,15 +35,9 @@ RocksDBInterface::RocksDBInterface(const char* url){
             nf, ColumnFamilyOptions()
         ));
     }
-
+    // открытие БД
     s = DB::Open(DBOptions(), url, column_family, &handles, &conn);
 
-    // std::vector<std::string> cf;
-    // conn->ListColumnFamilies(DBOptions(), url, &cf);
-    // for(auto i: cf){
-    //     std::cout << i << std::endl;
-    // }
-    //std::cout << s.getState() << std::endl;
     assert(s.ok());
 }
 
@@ -72,17 +66,18 @@ void RocksDBInterface::del(const Del_Read& par) {
 }
 
 FindRet RocksDBInterface::find(const FindPar& par) {
+    // объявление итератора по ColumnFamily
     rocksdb::Iterator* it = conn->NewIterator(ReadOptions(), handles[par.handle_n]);
     FindRet res;
     for (it->SeekToFirst(); it->Valid(); it->Next()){
         res.values.push_back(it->key().ToString());
-        //std::cout << it->value().ToString();
     }
     delete it;
     return res;
 }
 
 void RocksDBInterface::createUniDB(const char *path, int n){
+    // заполнение базы на основе json file с нормальным распределением nfType
     std::ifstream cf(path); 
 
     if (cf.is_open()) {
@@ -101,7 +96,7 @@ void RocksDBInterface::createUniDB(const char *path, int n){
         for (auto& profile : instances) {  // for 1 of 1. 
             for (int i = 0; i < n; i++) {
                 std::string nfInstanceId = std::to_string(i);
-                //std::string nfInstanceId = UUID::New().String();
+                //std::string nfInstanceId = UUID::New().String(); // для тестов
                 const int randomNumber = dist(rng);
                 profile["nfInstanceId"] = nfInstanceId;
                 profile["nfType"] = nfTypes[randomNumber];
@@ -118,9 +113,9 @@ void RocksDBInterface::createUniDB(const char *path, int n){
 }
 
 void RocksDBInterface::flushdb(){
+    // очистка базы
     for(size_t i = 0; i < NF.size() + 1; i++){
         rocksdb::Iterator* it = conn->NewIterator(ReadOptions(), handles[i]);
-        FindRet res;
         for (it->SeekToFirst(); it->Valid(); it->Next()){
             conn->SingleDelete(WriteOptions(), it->key());
         }
@@ -129,10 +124,12 @@ void RocksDBInterface::flushdb(){
 }
 
 RocksDBInterface::~RocksDBInterface(){
+    //удалене всех ColumnFamily
     for (auto handle : handles) {
         conn->DropColumnFamily(handle);
         auto s = conn->DestroyColumnFamilyHandle(handle);
         assert(s.ok());
     }
+    // удалене БД
     delete conn;
 }

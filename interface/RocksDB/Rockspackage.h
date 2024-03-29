@@ -1,5 +1,6 @@
 #pragma once
 
+// взаимодейсвтие с БД
 #include "rocksdb/db.h"
 #include "rocksdb/options.h"
 
@@ -7,6 +8,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+// взаимодействие с json file
 #include <nlohmann/json.hpp>
 
 using ROCKSDB_NAMESPACE::ReadOptions;
