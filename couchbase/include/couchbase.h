@@ -8,7 +8,7 @@
 #include <string>
 
 struct Result_ {
-  std::string value{};
+  std::string value;
   lcb_STATUS status{LCB_SUCCESS};
 };
 
@@ -16,6 +16,11 @@ struct Result_u {
   std::string value{};
   std::uint64_t cas{0};
   lcb_STATUS rc{LCB_SUCCESS};
+};
+
+struct Rows {
+  std::vector<std::string> rows{};
+  std::string metadata{""};
 };
 
 class CouchBaseInterface {
@@ -27,11 +32,15 @@ class CouchBaseInterface {
   void create(lcb_INSTANCE *instance, const std::string key,
               const std::string value);
 
+  void read(lcb_INSTANCE *instance, const std::string &bucketName,
+            const std::string &nfInstance, Rows &result);
+
   /// @brief Get the value of the given key in the bucket.
   /// @param instance lcb_INSTANCE(couchbase) instance.
   /// @param key Key.
   /// @return Cookie with result.
-  Result_ read(lcb_INSTANCE *instance, const std::string key);
+  Result_ search(lcb_INSTANCE *instance, const std::string key,
+                 Result_ &result);
 
   /// @brief Update the value of the given key in the bucket.
   /// @param instance lcb_INSTANCE(couchbase) instance.

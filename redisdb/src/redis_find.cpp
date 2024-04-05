@@ -1,3 +1,5 @@
+#include "../include/redis_find.h"
+
 #include <hiredis/hiredis.h>
 #include <sw/redis++/redis++.h>
 #include <sw/redis++/redis.h>
@@ -7,11 +9,8 @@
 #include <nlohmann/json.hpp>
 #include <random>
 #include <vector>
-// #include "uuid_v4/endianness.h"
-// #include "uuid_v4/uuid_v4.h"
 
 #include "../include/nfTypes.h"
-#include "../include/redis_find.h"
 
 /// inditificator.
 using json = nlohmann::json;

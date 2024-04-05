@@ -51,10 +51,67 @@ static void ixmgmt_callback(__unused lcb_INSTANCE *instance,
   }
 }
 
+static void row_callback(lcb_INSTANCE *instance, int type,
+                         const lcb_RESPQUERY *resp) {
+  int *idx = NULL;
+  size_t row_len = 0;
+  char *row = NULL;
+
+  lcb_STATUS rc = lcb_respquery_status(resp);
+  if (rc != LCB_SUCCESS) {
+    printf("failed to execute query: %s\n", lcb_strerror_short(rc));
+    exit(EXIT_FAILURE);
+  }
+  lcb_respquery_cookie(resp, (void **)(&idx));
+  if (lcb_respquery_is_final(resp)) {
+    printf("META: ");
+  } else {
+    printf("ROW #%d: ", (*idx)++);
+  }
+  // lcb_respquery_row(resp, &row, &row_len);
+  printf("%.*s\n", row_len, row);
+}
+
+static void query_callback(lcb_INSTANCE *, int, const lcb_RESPQUERY *resp) {
+  lcb_STATUS status = lcb_respquery_status(resp);
+  if (status != LCB_SUCCESS) {
+    const lcb_QUERY_ERROR_CONTEXT *ctx;
+    lcb_respquery_error_context(resp, &ctx);
+
+    uint32_t err_code = 0;
+    lcb_errctx_query_first_error_code(ctx, &err_code);
+
+    const char *err_msg = nullptr;
+    size_t err_msg_len = 0;
+    lcb_errctx_query_first_error_message(ctx, &err_msg, &err_msg_len);
+    std::string error_message{};
+    if (err_msg_len > 0) {
+      error_message.assign(err_msg, err_msg_len);
+    }
+
+    std::cerr << "[ERROR] failed to execute query. " << error_message << " ("
+              << err_code << ")\n";
+    return;
+  }
+
+  const char *buf = nullptr;
+  std::size_t buf_len = 0;
+  lcb_respquery_row(resp, &buf, &buf_len);
+  if (buf_len > 0) {
+    Rows *result = nullptr;
+    lcb_respquery_cookie(resp, reinterpret_cast<void **>(&result));
+    if (lcb_respquery_is_final(resp)) {
+      result->metadata.assign(buf, buf_len);
+    } else {
+      result->rows.emplace_back(std::string(buf, buf_len));
+    }
+  }
+}
+
 int main() {
   std::string username{"Administrator"};
   std::string password{"000000"};
-  std::string connection_string{"couchbase://127.0.0.1/test_bucket"};
+  std::string connection_string{"couchbase://127.0.0.1"};
   std::string bucket_name{"test_bucket"};
 
   lcb_CREATEOPTS *create_options = nullptr;
@@ -137,36 +194,74 @@ int main() {
   }
 
   CouchBaseInterface cbi;
-  std::string key_{"new_key"};
-  std::string value_{R"({"some":"json"})"};
-  cbi.create(instance, key_, value_);
+  // std::string key_{"new_key"};
+  // std::string value_{R"({"some":"json"})"};
+  // cbi.create(instance, key_, value_);
 
-  Result_ get_cbi{cbi.read(instance, key_)};
+  // Result_ get_cbi;
+  // cbi.search(instance, key_, get_cbi);
+  // std::cout << "\n\n"
+  //           << "THIS!!\n";
+  // std::cout << "Status for getting \"" << key_ << "\" is "
+  //           << lcb_strerror_short(get_cbi.status)
+  //           << ". Value: " << get_cbi.value << "\n";
 
-  std::cout << "Status for getting \"" << key_ << "\" is "
-            << lcb_strerror_short(get_cbi.status)
-            << ". Value: " << get_cbi.value << "\n";
+  // std::string value_n{R"({"some":"new_json"})"};
+  // cbi.update(instance, key_, value_n);
 
-  std::string value_n{R"({"some":"new_json"})"};
-  cbi.update(instance, key_, value_n);
+  // cbi.del(instance, key_);
 
-  cbi.del(instance, key_);
-
+  cbi.del(instance, "0");
   cbi.createUniDB(
       "/Users/georgryabov/Desktop/main/wtf/NRF_DATABASE_RESEARCH/couchbase/"
-      "data/data.json",
-      10, instance);
+      "data/test.json",
+      1, instance);
 
-  const char *bktname{"test_bucket"};
-  lcb_cntl(instance, LCB_CNTL_GET, LCB_CNTL_BUCKETNAME, &bktname);
+  // const char *bktname{"test_bucket"};
+  // {
+  //   lcb_cntl(instance, LCB_CNTL_GET, LCB_CNTL_BUCKETNAME, &bktname);
 
-  lcb_CMDN1XMGMT cmd = {};
-  cmd.spec.flags = LCB_N1XSPEC_F_PRIMARY;
-  cmd.spec.keyspace = bktname;
-  cmd.spec.nkeyspace = strlen(bktname);
-  cmd.callback = ixmgmt_callback;
-  lcb_n1x_create(instance, nullptr, &cmd);
-  lcb_wait(instance, LCB_WAIT_DEFAULT);
+  //   lcb_CMDN1XMGMT cmd = {};
+  //   cmd.spec.flags = LCB_N1XSPEC_F_PRIMARY;
+  //   cmd.spec.keyspace = bktname;
+  //   cmd.spec.nkeyspace = strlen(bktname);
+  //   cmd.spec.name = "nfInstanceId";
+  //   cmd.spec.nname = 12;
+  //   cmd.callback = ixmgmt_callback;
+  //   lcb_n1x_create(instance, nullptr, &cmd);
+  //   lcb_wait(instance, LCB_WAIT_DEFAULT);
+  // }
+
+  // {
+  //   Rows result{};
+
+  //   // tag::query[]
+  //   std::cout << "bucket_name = " << bucket_name << std::endl;
+  //   std::string statement =
+  //       "SELECT * FROM `" + bucket_name + R"(` WHERE nfInstanceId="0")";
+
+  //   lcb_CMDQUERY *cmd = nullptr;
+  //   check(lcb_cmdquery_create(&cmd), "create QUERY command");
+  //   check(lcb_cmdquery_statement(cmd, statement.c_str(), statement.size()),
+  //         "assign statement for QUERY command");
+  //   check(lcb_cmdquery_callback(cmd, query_callback),
+  //         "assign callback for QUERY command");
+  //   check(lcb_query(instance, &result, cmd), "schedule QUERY command");
+  //   check(lcb_cmdquery_destroy(cmd), "destroy QUERY command");
+  //   lcb_wait(instance, LCB_WAIT_DEFAULT);
+  //   // end::query[]
+
+  //   std::cout << "Query returned " << result.rows.size() << " rows\n";
+  //   for (const auto &row : result.rows) {
+  //     std::cout << row << "\n";
+  //   }
+  //   // std::cout << "\nMetadata:\n" << result.metadata << "\n";
+  // }
+  Rows result{};
+  std::string bucketName{"test_bucket"};
+  std::string nfInstanceId{"0"};
+  std::cout << "\n\n??????\n\n";
+  cbi.read(instance, bucketName, nfInstanceId, result);
 
   lcb_destroy(instance);
 }

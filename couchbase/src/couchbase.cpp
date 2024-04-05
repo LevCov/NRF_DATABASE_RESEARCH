@@ -1,6 +1,7 @@
 #include "../include/couchbase.h"
 
 #include <libcouchbase/couchbase.h>
+#include <libcouchbase/ixmgmt.h>
 
 #include <fstream>
 #include <iostream>
@@ -15,6 +16,42 @@
 
 using json = nlohmann::json;
 
+void query_callback(lcb_INSTANCE *, int, const lcb_RESPQUERY *resp) {
+  lcb_STATUS status = lcb_respquery_status(resp);
+  if (status != LCB_SUCCESS) {
+    const lcb_QUERY_ERROR_CONTEXT *ctx;
+    lcb_respquery_error_context(resp, &ctx);
+
+    uint32_t err_code = 0;
+    lcb_errctx_query_first_error_code(ctx, &err_code);
+
+    const char *err_msg = nullptr;
+    size_t err_msg_len = 0;
+    lcb_errctx_query_first_error_message(ctx, &err_msg, &err_msg_len);
+    std::string error_message{};
+    if (err_msg_len > 0) {
+      error_message.assign(err_msg, err_msg_len);
+    }
+
+    std::cerr << "[ERROR] failed to execute query. " << error_message << " ("
+              << err_code << ")\n";
+    return;
+  }
+
+  const char *buf = nullptr;
+  std::size_t buf_len = 0;
+  lcb_respquery_row(resp, &buf, &buf_len);
+  if (buf_len > 0) {
+    Rows *result = nullptr;
+    lcb_respquery_cookie(resp, reinterpret_cast<void **>(&result));
+    if (lcb_respquery_is_final(resp)) {
+      result->metadata.assign(buf, buf_len);
+    } else {
+      result->rows.emplace_back(std::string(buf, buf_len));
+    }
+  }
+}
+
 void CouchBaseInterface::create(lcb_INSTANCE *instance, const std::string key,
                                 const std::string value) {
   lcb_CMDSTORE *cmd = nullptr;
@@ -28,10 +65,9 @@ void CouchBaseInterface::create(lcb_INSTANCE *instance, const std::string key,
   lcb_wait(instance, LCB_WAIT_DEFAULT);
 }
 
-Result_ CouchBaseInterface::read(lcb_INSTANCE *instance,
-                                 const std::string key) {
-  Result_ result{};
-
+// read by id.
+Result_ CouchBaseInterface::search(lcb_INSTANCE *instance,
+                                   const std::string key, Result_ &result) {
   lcb_CMDGET *cmd = nullptr;
   check(lcb_cmdget_create(&cmd), "create GET command");
   check(lcb_cmdget_key(cmd, key.c_str(), key.size()),
@@ -72,8 +108,26 @@ void CouchBaseInterface::del(lcb_INSTANCE *instance, const std::string key) {
   lcb_wait(instance, LCB_WAIT_DEFAULT);
 }
 
+static void ixmgmt_callback(__unused lcb_INSTANCE *instance,
+                            __unused int cbtype,
+                            const struct lcb_RESPN1XMGMT_st *resp);
+
 void CouchBaseInterface::createUniDB(const char *config_path, int n,
                                      lcb_INSTANCE *instance) {
+  const char *bktname{"test_bucket"};
+
+  lcb_cntl(instance, LCB_CNTL_GET, LCB_CNTL_BUCKETNAME, &bktname);
+
+  lcb_CMDN1XMGMT cmd = {};
+  cmd.spec.flags = LCB_N1XSPEC_F_PRIMARY;
+  cmd.spec.keyspace = bktname;
+  cmd.spec.nkeyspace = strlen(bktname);
+  cmd.spec.name = "nfInstanceId";
+  cmd.spec.nname = 12;
+  cmd.callback = ixmgmt_callback;
+  lcb_n1x_create(instance, nullptr, &cmd);
+  lcb_wait(instance, LCB_WAIT_DEFAULT);
+
   std::ifstream cf(config_path);
   if (cf.is_open()) {
     std::mt19937 rng;
@@ -92,5 +146,47 @@ void CouchBaseInterface::createUniDB(const char *config_path, int n,
       }
     }
     cf.close();
+  }
+}
+
+void CouchBaseInterface::read(lcb_INSTANCE *instance,
+                              const std::string &bucketName,
+                              const std::string &nfInstance, Rows &result) {
+  // tag::query[]
+  std::string statement = "SELECT * FROM `" + bucketName +
+                          R"(` WHERE nfType=")" + nfInstance + R"(")";
+
+  lcb_CMDQUERY *cmd = nullptr;
+  CouchBaseInterface::check(lcb_cmdquery_create(&cmd), "create QUERY command");
+  CouchBaseInterface::check(
+      lcb_cmdquery_statement(cmd, statement.c_str(), statement.size()),
+      "assign statement for QUERY command");
+  CouchBaseInterface::check(lcb_cmdquery_callback(cmd, query_callback),
+                            "assign callback for QUERY command");
+  CouchBaseInterface::check(lcb_query(instance, &result, cmd),
+                            "schedule QUERY command");
+  CouchBaseInterface::check(lcb_cmdquery_destroy(cmd), "destroy QUERY command");
+  lcb_wait(instance, LCB_WAIT_DEFAULT);
+  // end::query[]
+  // std::cout << "Query returned " << result.rows.size() << " rows\n";
+  // for (const auto &row : result.rows) {
+  //   std::cout << row << "\n";
+  // }
+  // std::cout << "\nMetadata:\n" << result.metadata << "\n";
+}
+
+//
+// callbacks block
+//
+static void ixmgmt_callback(__unused lcb_INSTANCE *instance,
+                            __unused int cbtype,
+                            const struct lcb_RESPN1XMGMT_st *resp) {
+  if (resp->rc == LCB_SUCCESS) {
+    std::cout << "Index was successfully created!" << std::endl;
+  } else if (resp->rc == LCB_ERR_INDEX_EXISTS) {
+    std::cout << "Index already exists!!" << std::endl;
+  } else {
+    std::cout << "Operation failed: " << lcb_strerror_long(resp->rc)
+              << std::endl;
   }
 }

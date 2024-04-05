@@ -1,29 +1,30 @@
-//===----------------------------------------------------------------------===//
 #pragma once
 
 #include <string>
+#include <vector>
+
 enum NfTypes {
-  NRF,  // 0.
+  NRF,
   UDM,
   AMF,
   SMF,
   AUSF,
-  NEF,  // 5.
+  NEF,
   PCF,
   SMSF,
   NSSF,
   UDR,
-  LMF,  // 10.
+  LMF,
   GMLC,
   _5G_EIR,
   SEPP,
   UPF,
-  N3IWF,  // 15.
+  N3IWF,
   AF,
   UDSF,
   BSF,
   CHF,
-  NWDAF  // 20.
+  NWDAF
 };
 
 const std::vector<std::string> nfTypes{
