@@ -140,27 +140,19 @@ static void BM_find_and_update_500(benchmark::State& state) {
 
   for (auto _ : state) {
     benchmark::DoNotOptimize(a.find("nfType", "AMF"));
-    std::cout << "1" << std::endl;
     benchmark::DoNotOptimize(a.find("nfType", "SMF"));
-    std::cout << "2" << std::endl;
     benchmark::DoNotOptimize(a.find("nfType", "AMF"));
-    std::cout << "3" << std::endl;    benchmark::DoNotOptimize(a.find("nfType", "AMF"));
-    std::cout << "4" << std::endl;
+    benchmark::DoNotOptimize(a.find("nfType", "AMF"));
     benchmark::DoNotOptimize(a.find("nfType", "SMF"));
-    std::cout << "5" << std::endl;
     
     a.update("nrf_10", "nfType", " ");
 
     benchmark::DoNotOptimize(a.find("nfType", "AMF"));
-    std::cout << "6" << std::endl;
     benchmark::DoNotOptimize(a.find("nfType", "SMF"));
-    std::cout << "7" << std::endl;
     benchmark::DoNotOptimize(a.find("nfType", "AMF"));
-    std::cout << "8" << std::endl;
     benchmark::DoNotOptimize(a.find("nfType", "SMF"));
-    std::cout << "9" << std::endl;
     benchmark::DoNotOptimize(a.find("nfType", "SMF"));
-    std::cout << "10" << std::endl;
+   
 
   }
   a.dropUniDB(500);
