@@ -46,27 +46,20 @@ class CouchBaseInterface
   ~CouchBaseInterface();
 
   /// @brief Adds a new key value pair to the bucket.
-  /// @param instance_ lcb_INSTANCE(couchbase) instance_.
-  /// @param key Key.
-  /// @param value Value.
+  /// @param var Where first is key, second is value.
+  /// @return Always true.
   bool create(const std::pair<std::string, std::string> &var) override;
 
-  void find(const std::pair<std::string, std::string> &var) override;
-
   /// @brief Get the value of the given key in the bucket.
-  /// @param instance_ lcb_INSTANCE(couchbase) instance_.
   /// @param key Key.
-  /// @return Cookie with result.
   void read(const std::string &key) override;
 
   /// @brief Update the value of the given key in the bucket.
-  /// @param instance_ lcb_INSTANCE(couchbase) instance_.
   /// @param key Key.
   /// @param value Value.
   bool update(const std::string &key, const std::string &value) override;
 
   /// @brief Remove the given key-data pair from bucket.
-  /// @param instance_ lcb_INSTANCE(couchbase) instance_.
   /// @param key Key.
   void del(const std::string &key) override;
 
@@ -75,9 +68,14 @@ class CouchBaseInterface
   /// @param field Size of database.
   void createUniDB(const char *config_path, const size_t n);
 
+  /// @brief Performs a bucket search for this nfType.
+  /// @param var Where first is bucket name, second is nfType.
+  void find(const std::pair<std::string, std::string> &var) override;
+
+  /// @brief Flush a database.
   void flushdb();
 
-  lcb_INSTANCE *instance_{nullptr};
   Result_ result_;
   Rows resultRows_;
+  lcb_INSTANCE *instance_{nullptr};
 };

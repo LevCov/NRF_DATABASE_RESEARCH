@@ -3,11 +3,36 @@
 #include <libcouchbase/couchbase.h>
 #include <libcouchbase/ixmgmt.h>
 
+using json = nlohmann::json;
+
 /**
  ** \brief Represents a interface and search interactions in the redis database.
  */
 
-using json = nlohmann::json;
+CouchBaseInterface::CouchBaseInterface() {
+  const std::string username{"Administrator"}, password{"000000"},
+      connection_string{"couchbase://127.0.0.1"}, bucket_name{"test_bucket"};
+  lcb_CREATEOPTS *create_options = nullptr;
+  check(lcb_createopts_create(&create_options, LCB_TYPE_BUCKET),
+        "build options object for lcb_create");
+  check(lcb_createopts_credentials(create_options, username.c_str(),
+                                   username.size(), password.c_str(),
+                                   password.size()),
+        "assign credentials");
+  check(lcb_createopts_connstr(create_options, connection_string.c_str(),
+                               connection_string.size()),
+        "assign connection string");
+  check(lcb_createopts_bucket(create_options, bucket_name.c_str(),
+                              bucket_name.size()),
+        "assign bucket name");
+  check(lcb_create(&instance_, create_options), "create lcb_INSTANCE");
+  check(lcb_createopts_destroy(create_options), "destroy options object");
+  check(lcb_connect(instance_), "schedule connection");
+  check(lcb_wait(instance_, LCB_WAIT_DEFAULT), "wait for connection");
+  check(lcb_get_bootstrap_status(instance_), "check bootstrap status");
+}
+
+CouchBaseInterface::~CouchBaseInterface() {}
 
 bool CouchBaseInterface::create(
     const std::pair<std::string, std::string> &var) {
@@ -24,7 +49,6 @@ bool CouchBaseInterface::create(
   return true;
 }
 
-// read by id.
 void CouchBaseInterface::read(const std::string &key) {
   lcb_CMDGET *cmd = nullptr;
   check(lcb_cmdget_create(&cmd), "create GET command");
@@ -64,20 +88,6 @@ void CouchBaseInterface::del(const std::string &key) {
   lcb_wait(instance_, LCB_WAIT_DEFAULT);
 }
 
-void CouchBaseInterface::find(const std::pair<std::string, std::string> &var) {
-  std::string statement = "SELECT * FROM `" + var.first +
-                          R"(` WHERE nfType=")" + var.second + R"(")";
-  lcb_CMDQUERY *cmd = nullptr;
-  check(lcb_cmdquery_create(&cmd), "create QUERY command");
-  check(lcb_cmdquery_statement(cmd, statement.c_str(), statement.size()),
-        "assign statement for QUERY command");
-  check(lcb_cmdquery_callback(cmd, queryCallback),
-        "assign callback for QUERY command");
-  check(lcb_query(instance_, &resultRows_, cmd), "schedule QUERY command");
-  check(lcb_cmdquery_destroy(cmd), "destroy QUERY command");
-  lcb_wait(instance_, LCB_WAIT_DEFAULT);
-}
-
 void CouchBaseInterface::createUniDB(const char *config_path, const size_t n) {
   lcb_wait(instance_, LCB_WAIT_DEFAULT);
   char *bktname{"test_bucket"};
@@ -109,30 +119,19 @@ void CouchBaseInterface::createUniDB(const char *config_path, const size_t n) {
   }
 }
 
-CouchBaseInterface::CouchBaseInterface() {
-  const std::string username{"Administrator"}, password{"000000"},
-      connection_string{"couchbase://127.0.0.1"}, bucket_name{"test_bucket"};
-  lcb_CREATEOPTS *create_options = nullptr;
-  check(lcb_createopts_create(&create_options, LCB_TYPE_BUCKET),
-        "build options object for lcb_create");
-  check(lcb_createopts_credentials(create_options, username.c_str(),
-                                   username.size(), password.c_str(),
-                                   password.size()),
-        "assign credentials");
-  check(lcb_createopts_connstr(create_options, connection_string.c_str(),
-                               connection_string.size()),
-        "assign connection string");
-  check(lcb_createopts_bucket(create_options, bucket_name.c_str(),
-                              bucket_name.size()),
-        "assign bucket name");
-  check(lcb_create(&instance_, create_options), "create lcb_INSTANCE");
-  check(lcb_createopts_destroy(create_options), "destroy options object");
-  check(lcb_connect(instance_), "schedule connection");
-  check(lcb_wait(instance_, LCB_WAIT_DEFAULT), "wait for connection");
-  check(lcb_get_bootstrap_status(instance_), "check bootstrap status");
+void CouchBaseInterface::find(const std::pair<std::string, std::string> &var) {
+  std::string statement = "SELECT * FROM `" + var.first +
+                          R"(` WHERE nfType=")" + var.second + R"(")";
+  lcb_CMDQUERY *cmd = nullptr;
+  check(lcb_cmdquery_create(&cmd), "create QUERY command");
+  check(lcb_cmdquery_statement(cmd, statement.c_str(), statement.size()),
+        "assign statement for QUERY command");
+  check(lcb_cmdquery_callback(cmd, queryCallback),
+        "assign callback for QUERY command");
+  check(lcb_query(instance_, &resultRows_, cmd), "schedule QUERY command");
+  check(lcb_cmdquery_destroy(cmd), "destroy QUERY command");
+  lcb_wait(instance_, LCB_WAIT_DEFAULT);
 }
-
-CouchBaseInterface::~CouchBaseInterface() {}
 
 void CouchBaseInterface::flushdb() {
   const std::string flush_path{
@@ -149,9 +148,7 @@ void CouchBaseInterface::flushdb() {
   check(lcb_cmdhttp_destroy(cmd), "destroy command object");
   check(lcb_wait(instance_, LCB_WAIT_DEFAULT), "wait for completion");
 }
-//
-// callbacks block
-//
+
 void ixmgmtCallback(__unused lcb_INSTANCE *instance_, __unused int cbtype,
                     const struct lcb_RESPN1XMGMT_st *resp) {
   if (resp->rc == LCB_SUCCESS) {
