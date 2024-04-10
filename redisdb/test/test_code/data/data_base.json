@@ -1,8 +1,0 @@
-[
-    {
-        "nfInstanceId": "string_TEST",
-        "nfInstanceName": "string",
-        "nfType": "NRF_TEST",
-        "nfStatus": "REGISTERED"
-    }
-]
