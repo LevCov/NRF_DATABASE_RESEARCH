@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
+#include <string>
+#include <utility>
 #include <vector>
 
 #include "../../include/DBInterface.h"
@@ -21,7 +24,7 @@ class RedisDBInterface
  public:
   /// @brief Redis initialization.
   /// @param uri The server at the address 127.0.0.1 with port 6379.
-  RedisDBInterface(const char* uri)
+  explicit RedisDBInterface(const char* uri)
       : redis_(uri), connection_{redis_.connection()} {}
 
   RedisDBInterface() = delete;

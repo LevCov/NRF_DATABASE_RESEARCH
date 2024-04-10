@@ -110,9 +110,9 @@ TEST(FUNCTION, find) {
   redis.createUniDB(cstr, n);
 
   bool flag = true;
-  for (auto& type : nfTypes) {  // string_view???
+  for (const auto& type : nfTypes) {  // string_view???
     std::vector<OptionalString> match_keys = redis.find(type);
-    for (auto& key : match_keys) {
+    for (const auto& key : match_keys) {
       flag *= redis.connection_->hget(*key, "nfType") == type;
     }
   }
