@@ -41,7 +41,8 @@ class RedisDBInterface
   /// @param key Key where the hash is stored.
   /// @param field Field
   /// @return Value of the given field.
-  OptionalString read(const std::pair<StringView, StringView>& var) override;
+  [[nodiscard]] OptionalString read(
+      const std::pair<StringView, StringView>& var) override;
 
   /// @brief Updating the value if it existed before.
   /// @param var pair with first - key where the hash is stored, second - field.

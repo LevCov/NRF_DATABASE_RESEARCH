@@ -21,7 +21,7 @@ OptionalString RedisDBInterface::read(
 bool RedisDBInterface::update(
     const std::pair<StringView, StringView> &var,
     const std::pair<StringView, StringView> &dataField) {
-  if (!connection_->hget(var.first, var.second)) {
+  if (!connection_->hget(var.first, var.second)) [[likely]] {
     connection_->hset(var.first, var.second, dataField.first);
     return true;
   }
@@ -32,14 +32,14 @@ void RedisDBInterface::del(const std::pair<StringView, StringView> &var) {
   connection_->hdel(var.first, var.second);
 }
 
-std::vector<OptionalString> RedisDBInterface::find(
+[[nodiscard]] std::vector<OptionalString> RedisDBInterface::find(
     const StringView &nfTypeSearch) {
   std::vector<OptionalString> match_keys;
   std::vector<OptionalString> keys;
 
   connection_->keys("*", std::back_inserter(keys));
   for (const auto &key : keys) {
-    if (connection_->hget(*key, "nfType") == nfTypeSearch)
+    if (connection_->hget(*key, "nfType") == nfTypeSearch) [[unlikely]]
       match_keys.push_back(key);
   }
 
