@@ -3,6 +3,32 @@
 using namespace rapidjson;
 
 
+
+
+
+
+
+MYSQLInterface :: MYSQLInterface(std::string tcp_, std::string root_, std::string password_, std::string DBName_)
+{
+    tcp = tcp_;
+    root = root_;
+    password = password_;
+    DBName = DBName_;
+
+	sql::mysql::MySQL_Driver* driver; //инициализация драйвера
+
+	driver = sql::mysql::get_mysql_driver_instance();
+	con = driver->connect(tcp, root, password); //Подключение к базе данных
+	con->setSchema(DBName);
+    stmt = con->createStatement();
+}
+
+MYSQLInterface :: ~MYSQLInterface() {
+     delete stmt;
+     delete con;
+ }
+
+
 bool MYSQLInterface :: createTable(std::string path, std::string name)
 {
     ifstream ifs(path);
