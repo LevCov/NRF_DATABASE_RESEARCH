@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -rdynamic CMakeFiles/bench.dir/bench_rocks.cpp.o -o bench  -lbenchmark -lpthread build/RocksDB/libRocks.a -lrocksdb -ldl 

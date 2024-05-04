@@ -1,0 +1,6 @@
+/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/interface/benchmarks/Rocks/build/CMakeFiles/bench.dir
+/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/interface/benchmarks/Rocks/build/CMakeFiles/edit_cache.dir
+/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/interface/benchmarks/Rocks/build/CMakeFiles/rebuild_cache.dir
+/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/interface/benchmarks/Rocks/build/build/RocksDB/CMakeFiles/Rocks.dir
+/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/interface/benchmarks/Rocks/build/build/RocksDB/CMakeFiles/edit_cache.dir
+/home/anx_tl/cplusplus/project_nrf/NRF_DATABASE_RESEARCH/interface/benchmarks/Rocks/build/build/RocksDB/CMakeFiles/rebuild_cache.dir

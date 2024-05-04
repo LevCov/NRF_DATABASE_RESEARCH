@@ -1,0 +1,2 @@
+/usr/bin/ar qc libRocks.a CMakeFiles/Rocks.dir/RocksDBInterface.cpp.o
+/usr/bin/ranlib libRocks.a
