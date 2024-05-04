@@ -18,7 +18,7 @@ static void BM_Create(benchmark::State &state) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string key{"0"}, value{R"({"some":"json"})"};
+  const std::string_view key{"0"}, value{R"({"some":"json"})"};
   for (auto _ : state) {
     database->create(std::make_pair(key, value));
   }
@@ -29,7 +29,7 @@ static void BM_Read(benchmark::State &state) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string key{"0"}, value{R"({"some":"json"})"};
+  const std::string_view key{"0"}, value{R"({"some":"json"})"};
   database->create(std::make_pair(key, value));
   for (auto _ : state) {
     database->read(key);
@@ -42,7 +42,7 @@ static void BM_Update(benchmark::State &state) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string key{"0"}, value{R"({"nfInstanceId":"0"})"};
+  const std::string_view key{"0"}, value{R"({"nfInstanceId":"0"})"};
   database->create(std::make_pair(key, value));
   for (auto _ : state) {
     database->update("someKey", value);
@@ -54,7 +54,7 @@ static void BM_Del(benchmark::State &state) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string key{"0"}, value{R"({"nfInstanceId":"0"})"};
+  const std::string_view key{"0"}, value{R"({"nfInstanceId":"0"})"};
   database->create(std::make_pair(key, value));
   for (auto _ : state) {
     database->del(key);
@@ -67,7 +67,7 @@ static void BM_Search(benchmark::State &state) {
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
   std::string path = pathDir + "benchmarks/data_model.json";
-  const std::string bucketName{"test_bucket"};
+  const std::string_view bucketName{"test_bucket"};
   const int n = state.range(0);
   database->createUniDB(path.c_str(), n);
   for (auto _ : state) {

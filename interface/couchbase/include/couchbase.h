@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-#include "../../../redisdb/include/nfTypes.h"
+#include "../../RedisDB/nfTypes.h"
 #include "../../include/DBInterface.h"
 
 void getCallback(lcb_INSTANCE *, int, const lcb_RESPGET *resp);
@@ -38,9 +38,9 @@ struct Rows {
 };
 
 class CouchBaseInterface
-    : public DBInterface<std::pair<std::string, std::string>, void, std::string,
-                         std::string, std::pair<std::string, std::string>,
-                         void> {
+    : public DBInterface<std::pair<std::string_view, std::string_view>, void,
+                         std::string_view, std::string_view,
+                         std::pair<std::string_view, std::string_view>, void> {
  public:
   CouchBaseInterface();
   ~CouchBaseInterface();
@@ -48,20 +48,22 @@ class CouchBaseInterface
   /// @brief Adds a new key value pair to the bucket.
   /// @param var Where first is key, second is value.
   /// @return Always true.
-  bool create(const std::pair<std::string, std::string> &var) override;
+  bool create(
+      const std::pair<std::string_view, std::string_view> &var) override;
 
   /// @brief Get the value of the given key in the bucket.
   /// @param key Key.
-  void read(const std::string &key) override;
+  void read(const std::string_view &key) override;
 
   /// @brief Update the value of the given key in the bucket.
   /// @param key Key.
   /// @param value Value.
-  bool update(const std::string &key, const std::string &value) override;
+  bool update(const std::string_view &key,
+              const std::string_view &value) override;
 
   /// @brief Remove the given key-data pair from bucket.
   /// @param key Key.
-  void del(const std::string &key) override;
+  void del(const std::string_view &key) override;
 
   /// @brief Сreating DB with uniform dist nfprofiles.
   /// @param config_path Path to file with template.
@@ -70,7 +72,7 @@ class CouchBaseInterface
 
   /// @brief Performs a bucket search for this nfType.
   /// @param var Where first is bucket name, second is nfType.
-  void find(const std::pair<std::string, std::string> &var) override;
+  void find(const std::pair<std::string_view, std::string_view> &var) override;
 
   /// @brief Flush a database.
   void flushdb();

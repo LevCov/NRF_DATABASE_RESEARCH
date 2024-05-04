@@ -10,19 +10,19 @@ using json = nlohmann::json;
  */
 
 CouchBaseInterface::CouchBaseInterface() {
-  const std::string username{"Administrator"}, password{"000000"},
+  const std::string_view username{"Administrator"}, password{"000000"},
       connection_string{"couchbase://127.0.0.1"}, bucket_name{"test_bucket"};
   lcb_CREATEOPTS *create_options = nullptr;
   check(lcb_createopts_create(&create_options, LCB_TYPE_BUCKET),
         "build options object for lcb_create");
-  check(lcb_createopts_credentials(create_options, username.c_str(),
-                                   username.size(), password.c_str(),
+  check(lcb_createopts_credentials(create_options, username.data(),
+                                   username.size(), password.data(),
                                    password.size()),
         "assign credentials");
-  check(lcb_createopts_connstr(create_options, connection_string.c_str(),
+  check(lcb_createopts_connstr(create_options, connection_string.data(),
                                connection_string.size()),
         "assign connection string");
-  check(lcb_createopts_bucket(create_options, bucket_name.c_str(),
+  check(lcb_createopts_bucket(create_options, bucket_name.data(),
                               bucket_name.size()),
         "assign bucket name");
   check(lcb_create(&instance_, create_options), "create lcb_INSTANCE");
@@ -35,13 +35,13 @@ CouchBaseInterface::CouchBaseInterface() {
 CouchBaseInterface::~CouchBaseInterface() {}
 
 bool CouchBaseInterface::create(
-    const std::pair<std::string, std::string> &var) {
+    const std::pair<std::string_view, std::string_view> &var) {
   lcb_wait(instance_, LCB_WAIT_DEFAULT);
   lcb_CMDSTORE *cmd = nullptr;
   check(lcb_cmdstore_create(&cmd, LCB_STORE_UPSERT), "create UPSERT command");
-  check(lcb_cmdstore_key(cmd, var.first.c_str(), var.first.size()),
+  check(lcb_cmdstore_key(cmd, var.first.data(), var.first.size()),
         "assign ID for UPSERT command");
-  check(lcb_cmdstore_value(cmd, var.second.c_str(), var.second.size()),
+  check(lcb_cmdstore_value(cmd, var.second.data(), var.second.size()),
         "assign value for UPSERT command");
   check(lcb_store(instance_, nullptr, cmd), "schedule UPSERT command");
   check(lcb_cmdstore_destroy(cmd), "destroy UPSERT command");
@@ -49,24 +49,24 @@ bool CouchBaseInterface::create(
   return true;
 }
 
-void CouchBaseInterface::read(const std::string &key) {
+void CouchBaseInterface::read(const std::string_view &key) {
   lcb_CMDGET *cmd = nullptr;
   check(lcb_cmdget_create(&cmd), "create GET command");
-  check(lcb_cmdget_key(cmd, key.c_str(), key.size()),
+  check(lcb_cmdget_key(cmd, key.data(), key.size()),
         "assign ID for GET command");
   check(lcb_get(instance_, &result_, cmd), "schedule GET command");
   check(lcb_cmdget_destroy(cmd), "destroy GET command");
   lcb_wait(instance_, LCB_WAIT_DEFAULT);
 }
 
-bool CouchBaseInterface::update(const std::string &key,
-                                const std::string &value) {
+bool CouchBaseInterface::update(const std::string_view &key,
+                                const std::string_view &value) {
   Result_u result{};
   lcb_CMDSTORE *cmd = nullptr;
   check(lcb_cmdstore_create(&cmd, LCB_STORE_REPLACE), "create REPLACE command");
-  check(lcb_cmdstore_key(cmd, key.c_str(), key.size()),
+  check(lcb_cmdstore_key(cmd, key.data(), key.size()),
         "assign ID for REPLACE command");
-  check(lcb_cmdstore_value(cmd, value.c_str(), value.size()),
+  check(lcb_cmdstore_value(cmd, value.data(), value.size()),
         "assign value for REPLACE command");
   check(lcb_store(instance_, &result, cmd), "schedule REPLACE command");
   check(lcb_cmdstore_destroy(cmd), "destroy UPSERT command");
@@ -78,10 +78,10 @@ bool CouchBaseInterface::update(const std::string &key,
   return true;
 }
 
-void CouchBaseInterface::del(const std::string &key) {
+void CouchBaseInterface::del(const std::string_view &key) {
   lcb_CMDREMOVE *cmd = nullptr;
   check(lcb_cmdremove_create(&cmd), "create REMOVE command");
-  check(lcb_cmdremove_key(cmd, key.c_str(), key.size()),
+  check(lcb_cmdremove_key(cmd, key.data(), key.size()),
         "assign key for REMOVE command");
   check(lcb_remove(instance_, nullptr, cmd), "schedule REMOVE command");
   check(lcb_cmdremove_destroy(cmd), "destroy REMOVE command");
@@ -90,7 +90,7 @@ void CouchBaseInterface::del(const std::string &key) {
 
 void CouchBaseInterface::createUniDB(const char *config_path, const size_t n) {
   lcb_wait(instance_, LCB_WAIT_DEFAULT);
-  char *bktname{"test_bucket"};
+  const char *bktname{"test_bucket"};
   lcb_cntl(instance_, LCB_CNTL_GET, LCB_CNTL_BUCKETNAME, &bktname);
   lcb_CMDN1XMGMT cmd = {};
   cmd.spec.flags = LCB_N1XSPEC_F_PRIMARY;
@@ -119,9 +119,11 @@ void CouchBaseInterface::createUniDB(const char *config_path, const size_t n) {
   }
 }
 
-void CouchBaseInterface::find(const std::pair<std::string, std::string> &var) {
-  std::string statement = "SELECT * FROM `" + var.first +
-                          R"(` WHERE nfType=")" + var.second + R"(")";
+void CouchBaseInterface::find(
+    const std::pair<std::string_view, std::string_view> &var) {
+  std::string statement = "SELECT * FROM `" + std::string(var.first) +
+                          R"(` WHERE nfType=")" + std::string(var.second) +
+                          R"(")";
   lcb_CMDQUERY *cmd = nullptr;
   check(lcb_cmdquery_create(&cmd), "create QUERY command");
   check(lcb_cmdquery_statement(cmd, statement.c_str(), statement.size()),

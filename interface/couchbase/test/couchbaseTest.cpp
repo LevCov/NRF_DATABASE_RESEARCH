@@ -10,11 +10,11 @@ TEST(CRUD, create) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string key{"0"}, value{R"({"some":"json"})"};
+  const std::string_view key{"0"}, value{R"({"some":"json"})"};
   database->create(std::make_pair(key, value));
   lcb_CMDGET *cmd = nullptr;
   check(lcb_cmdget_create(&cmd), "create GET command");
-  check(lcb_cmdget_key(cmd, key.c_str(), key.size()),
+  check(lcb_cmdget_key(cmd, key.data(), key.size()),
         "assign ID for GET command");
   check(lcb_get(database->instance_, &database->result_, cmd),
         "schedule GET command");
@@ -28,7 +28,7 @@ TEST(CRUD, read) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string key{"0"}, value{R"({"some":"json"})"};
+  const std::string_view key{"0"}, value{R"({"some":"json"})"};
   database->create(std::make_pair(key, value));
   database->read(key);
   bool flag = value == database->result_.value;
@@ -43,7 +43,7 @@ TEST(CRUD, find) {
       "/Users/georgryabov/Desktop/main/wtf/NRF_DATABASE_RESEARCH/interface/"
       "couchbase/data/test.json",
       2);
-  const std::string bucketName{"test_bucket"}, nfType{"CHF"};
+  const std::string_view bucketName{"test_bucket"}, nfType{"CHF"};
   database->find(std::make_pair(bucketName, nfType));
   bool flag = false;
   for (const auto &row : database->resultRows_.rows) {
@@ -58,9 +58,9 @@ TEST(CRUD, update) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string value{R"({"nfInstanceId":"0"})"};
+  const std::string_view value{R"({"nfInstanceId":"0"})"};
   database->create(std::make_pair("someKey", value));
-  const std::string value_n{R"({"some":"new_json"})"};
+  const std::string_view value_n{R"({"some":"new_json"})"};
   database->update("someKey", value_n);
   database->read("someKey");
   bool flag = database->result_.value == R"({"some":"new_json"})";
@@ -71,7 +71,7 @@ TEST(CRUD, del) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string value{R"({"nfInstanceId":"0"})"};
+  const std::string_view value{R"({"nfInstanceId":"0"})"};
   database->create(std::make_pair("someKey", value));
   database->del("someKey");
   database->read("someKey");
@@ -88,14 +88,15 @@ TEST(selfMethod, CreateUniDB) {
       "/Users/georgryabov/Desktop/main/wtf/NRF_DATABASE_RESEARCH/interface/"
       "couchbase/data/test.json",
       5);
-  const std::vector<std::string> ans{
+  const std::vector<std::string_view> ans{
       R"({"test_bucket":{"nfInstanceId":"0","nfInstanceName":"string","nfType":"PCF"}})",
       R"({"test_bucket":{"nfInstanceId":"1","nfInstanceName":"string","nfType":"CHF"}})",
       R"({"test_bucket":{"nfInstanceId":"2","nfInstanceName":"string","nfType":"UPF"}})",
       R"({"test_bucket":{"nfInstanceId":"3","nfInstanceName":"string","nfType":"LMF"}})",
       R"({"test_bucket":{"nfInstanceId":"4","nfInstanceName":"string","nfType":"SMSF"}})"};
-  const std::vector<std::string> ansTypes{"PCF", "CHF", "UPF", "LMF", "SMSF"};
-  std::string bucketName{"test_bucket"};
+  const std::vector<std::string_view> ansTypes{"PCF", "CHF", "UPF", "LMF",
+                                               "SMSF"};
+  std::string_view bucketName{"test_bucket"};
   bool flag = true;
   for (int i = 0; i < 5; ++i) {
     database->find(std::make_pair(bucketName, ansTypes[i]));

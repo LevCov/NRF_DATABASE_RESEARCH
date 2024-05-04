@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -74,8 +75,8 @@ class RedisDBInterface
 };
 
 struct CreateRedis {
-  CreateRedis(const std::string& key, const std::string& field,
-              const std::string& dataField)
+  CreateRedis(const std::string_view& key, const std::string_view& field,
+              const std::string_view& dataField)
       : key_{key}, field_{field}, dataField_{dataField} {}
   CreateRedis() = delete;
   ~CreateRedis() = default;
