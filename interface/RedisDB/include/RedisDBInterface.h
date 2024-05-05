@@ -17,7 +17,7 @@ using StringView = sw::redis::StringView;
 struct CreateRedis;
 
 /// @brief Interface to the redis database.
-class RedisDBInterface
+class RedisDBInterface final
     : public DBInterface<CreateRedis, OptionalString,
                          std::pair<StringView, StringView>,
                          std::pair<StringView, StringView>, StringView,

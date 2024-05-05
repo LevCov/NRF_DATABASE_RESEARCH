@@ -37,7 +37,7 @@ struct Rows {
   std::string metadata{""};
 };
 
-class CouchBaseInterface
+class CouchBaseInterface final
     : public DBInterface<std::pair<std::string_view, std::string_view>, void,
                          std::string_view, std::string_view,
                          std::pair<std::string_view, std::string_view>, void> {

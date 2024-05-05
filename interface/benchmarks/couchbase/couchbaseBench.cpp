@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-#include "../include/couchbase.h"
+#include "../../couchbase/include/couchbase.h"
 #include "bench_settings.h"
 
 const std::string pathDir = std::filesystem::current_path().remove_filename();
@@ -60,7 +60,7 @@ static void BM_Del(benchmark::State &state) {
     database->del(key);
   }
 }
-BENCHMARK(BM_Del)->Iterations(1)->Repetitions(100);
+BENCHMARK(BM_Del)->Iterations(1)->Repetitions(10);
 
 static void BM_Search(benchmark::State &state) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
