@@ -6,40 +6,42 @@
 #include "../../UUID/UUIDv4.h"
 #include "../nfTypes.h"
 
+namespace {
 using json = nlohmann::json;
+using value_t = OptionalString;
+using keys_t = std::vector<OptionalString>;
+}  // namespace
 
 bool RedisDBInterface::create(const CreateRedis &var) {
-  connection_->hset(var.key_, var.field_, var.dataField_);
-  return true;
+  return connection_->hset(var.key_, var.field_, var.dataField_);
 }
 
-OptionalString RedisDBInterface::read(
-    const std::pair<StringView, StringView> &var) {
+value_t RedisDBInterface::read(const keyField_t &var) {
   return connection_->hget(var.first, var.second);
 }
 
-bool RedisDBInterface::update(
-    const std::pair<StringView, StringView> &var,
-    const std::pair<StringView, StringView> &dataField) {
-  if (!connection_->hget(var.first, var.second)) [[likely]] {
+bool RedisDBInterface::update(const keyField_t &var,
+                              const keyField_t &dataField) {
+  if (!connection_->hget(var.first, var.second)) {
     connection_->hset(var.first, var.second, dataField.first);
     return true;
   }
   return false;
 }
 
-void RedisDBInterface::del(const std::pair<StringView, StringView> &var) {
+void RedisDBInterface::del(const keyField_t &var) {
   connection_->hdel(var.first, var.second);
 }
 
-[[nodiscard]] std::vector<OptionalString> RedisDBInterface::find(
-    const StringView &nfTypeSearch) {
-  std::vector<OptionalString> match_keys;
-  std::vector<OptionalString> keys;
+[[nodiscard]] keys_t RedisDBInterface::find(const FindRedis &var) {
+  keys_t match_keys;
+  keys_t keys;
+  match_keys.reserve(var.n_ / (nfTypes.size() - 1));
+  keys.reserve(var.n_);
 
   connection_->keys("*", std::back_inserter(keys));
-  for (const auto &key : keys) {
-    if (connection_->hget(*key, "nfType") == nfTypeSearch) [[unlikely]]
+  for (auto &&key : keys) {
+    if (connection_->hget(*key, "nfType") == var.nfTypeSearch_) [[unlikely]]
       match_keys.push_back(key);
   }
 
@@ -54,10 +56,10 @@ void RedisDBInterface::createUniDB(const char *config_path, const size_t n) {
     std::mt19937 rng;
     const uint8_t seed = 42;
     rng.seed(seed);
-    std::uniform_int_distribution<int> dist(0, 20);
+    std::uniform_int_distribution<int> dist(0, nfTypes.size());
     json instances = json::parse(cf);
 
-    for (auto &profile : instances) {  // for 1 of 1.
+    for (auto &&profile : instances) {  // for 1 of 1.
       for (size_t i = 0; i < n; ++i) {
         const std::string nfInstanceId = std::to_string(i);
         // std::string nfInstanceId = UUID::New().String();
@@ -71,4 +73,9 @@ void RedisDBInterface::createUniDB(const char *config_path, const size_t n) {
 
     cf.close();
   }
+}
+
+void checkRedisConnection(const std::shared_ptr<sw::redis::Redis> &connection) {
+  if (!connection.use_count())
+    std::cerr << "Not connected to the redis database\n";
 }

@@ -6,21 +6,29 @@
 
 auto database = std::make_unique<CouchBaseInterface>();
 
+namespace {
+using key_tt = std::string_view;
+using value_t = std::string_view;
+}  // namespace
+
+const std::pair<key_tt, value_t> keyVal({"0", R"({"some":"json"})"});
+
 TEST(CRUD, create) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string_view key{"0"}, value{R"({"some":"json"})"};
-  database->create(std::make_pair(key, value));
+  // const std::string_view key{"0"}, value{R"({"some":"json"})"};
+  // database->create(std::make_pair(key, value));
+  database->create(std::make_pair(keyVal.first, keyVal.second));
   lcb_CMDGET *cmd = nullptr;
   check(lcb_cmdget_create(&cmd), "create GET command");
-  check(lcb_cmdget_key(cmd, key.data(), key.size()),
+  check(lcb_cmdget_key(cmd, keyVal.first.data(), keyVal.first.size()),
         "assign ID for GET command");
   check(lcb_get(database->instance_, &database->result_, cmd),
         "schedule GET command");
   check(lcb_cmdget_destroy(cmd), "destroy GET command");
   lcb_wait(database->instance_, LCB_WAIT_DEFAULT);
-  bool flag = value == database->result_.value;
+  bool flag = keyVal.second == database->result_.value;
   EXPECT_EQ(flag, true);
 }
 
@@ -28,10 +36,9 @@ TEST(CRUD, read) {
   lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
   database->flushdb();
-  const std::string_view key{"0"}, value{R"({"some":"json"})"};
-  database->create(std::make_pair(key, value));
-  database->read(key);
-  bool flag = value == database->result_.value;
+  database->create(keyVal);
+  database->read(keyVal.first);
+  bool flag = keyVal.second == database->result_.value;
   EXPECT_EQ(flag, true);
 }
 
@@ -46,7 +53,8 @@ TEST(CRUD, find) {
   const std::string_view bucketName{"test_bucket"}, nfType{"CHF"};
   database->find(std::make_pair(bucketName, nfType));
   bool flag = false;
-  for (const auto &row : database->resultRows_.rows) {
+  for (auto &&row : database->resultRows_.rows) {
+    // std::cout << row << " ";
     if (row ==
         R"({"test_bucket":{"nfInstanceId":"1","nfInstanceName":"string","nfType":"CHF"}})")
       flag = true;
@@ -80,11 +88,11 @@ TEST(CRUD, del) {
 }
 
 TEST(selfMethod, CreateUniDB) {
-  auto database = std::make_unique<CouchBaseInterface>();
-  lcb_install_callback(database->instance_, LCB_CALLBACK_GET,
+  auto databaseNew = std::make_unique<CouchBaseInterface>();
+  lcb_install_callback(databaseNew->instance_, LCB_CALLBACK_GET,
                        reinterpret_cast<lcb_RESPCALLBACK>(getCallback));
-  database->flushdb();
-  database->createUniDB(
+  databaseNew->flushdb();
+  databaseNew->createUniDB(
       "/Users/georgryabov/Desktop/main/wtf/NRF_DATABASE_RESEARCH/interface/"
       "couchbase/data/test.json",
       5);
@@ -99,11 +107,11 @@ TEST(selfMethod, CreateUniDB) {
   std::string_view bucketName{"test_bucket"};
   bool flag = true;
   for (int i = 0; i < 5; ++i) {
-    database->find(std::make_pair(bucketName, ansTypes[i]));
-    for (const auto &row : database->resultRows_.rows) {
+    databaseNew->find(std::make_pair(bucketName, ansTypes[i]));
+    for (auto &&row : databaseNew->resultRows_.rows) {
       flag = flag && (row == ans[i]);
     }
-    database->resultRows_ = {};
+    databaseNew->resultRows_ = {};
   }
   EXPECT_EQ(flag, true);
 }

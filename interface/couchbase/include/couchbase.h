@@ -7,7 +7,7 @@
 #include <nlohmann/json.hpp>
 #include <random>
 #include <string>
-#include <utility>
+#include <utility>s
 #include <vector>
 
 #include "../../RedisDB/nfTypes.h"
@@ -17,7 +17,7 @@ void getCallback(lcb_INSTANCE *, int, const lcb_RESPGET *resp);
 void queryCallback(lcb_INSTANCE *, int, const lcb_RESPQUERY *resp);
 void ixmgmtCallback(__unused lcb_INSTANCE *instance_, __unused int cbtype,
                     const struct lcb_RESPN1XMGMT_st *resp);
-void httpCallback(lcb_INSTANCE *, int, const lcb_RESPHTTP *resp);
+void flushCallback(lcb_INSTANCE *, int, const lcb_RESPHTTP *resp);
 void check(lcb_STATUS err, const char *msg);
 
 struct Result_ {
@@ -42,28 +42,29 @@ class CouchBaseInterface final
                          std::string_view, std::string_view,
                          std::pair<std::string_view, std::string_view>, void> {
  public:
+  using key_t = std::string_view;
+  using value_t = std::string_view;
+
   CouchBaseInterface();
-  ~CouchBaseInterface();
+  ~CouchBaseInterface() = default;
 
   /// @brief Adds a new key value pair to the bucket.
   /// @param var Where first is key, second is value.
   /// @return Always true.
-  bool create(
-      const std::pair<std::string_view, std::string_view> &var) override;
+  bool create(const std::pair<key_t, value_t> &var) override;
 
   /// @brief Get the value of the given key in the bucket.
   /// @param key Key.
-  void read(const std::string_view &key) override;
+  void read(const key_t &key) override;
 
   /// @brief Update the value of the given key in the bucket.
   /// @param key Key.
   /// @param value Value.
-  bool update(const std::string_view &key,
-              const std::string_view &value) override;
+  bool update(const key_t &key, const value_t &value) override;
 
   /// @brief Remove the given key-data pair from bucket.
   /// @param key Key.
-  void del(const std::string_view &key) override;
+  void del(const key_t &key) override;
 
   /// @brief Сreating DB with uniform dist nfprofiles.
   /// @param config_path Path to file with template.
@@ -72,7 +73,7 @@ class CouchBaseInterface final
 
   /// @brief Performs a bucket search for this nfType.
   /// @param var Where first is bucket name, second is nfType.
-  void find(const std::pair<std::string_view, std::string_view> &var) override;
+  void find(const std::pair<key_t, value_t> &var) override;
 
   /// @brief Flush a database.
   void flushdb();

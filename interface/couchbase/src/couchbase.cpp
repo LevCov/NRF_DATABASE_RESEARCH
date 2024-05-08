@@ -32,8 +32,6 @@ CouchBaseInterface::CouchBaseInterface() {
   check(lcb_get_bootstrap_status(instance_), "check bootstrap status");
 }
 
-CouchBaseInterface::~CouchBaseInterface() {}
-
 bool CouchBaseInterface::create(
     const std::pair<std::string_view, std::string_view> &var) {
   lcb_wait(instance_, LCB_WAIT_DEFAULT);
@@ -74,6 +72,7 @@ bool CouchBaseInterface::update(const std::string_view &key,
   if (result.rc != LCB_SUCCESS) {
     std::cout << "failed to append " << ": " << lcb_strerror_short(result.rc)
               << "\n";
+    return false;
   }
   return true;
 }
@@ -90,12 +89,13 @@ void CouchBaseInterface::del(const std::string_view &key) {
 
 void CouchBaseInterface::createUniDB(const char *config_path, const size_t n) {
   lcb_wait(instance_, LCB_WAIT_DEFAULT);
-  const char *bktname{"test_bucket"};
+  // const char *bktname{"test_bucket"};
+  std::string_view bktname{"test_bucket"};
   lcb_cntl(instance_, LCB_CNTL_GET, LCB_CNTL_BUCKETNAME, &bktname);
   lcb_CMDN1XMGMT cmd = {};
   cmd.spec.flags = LCB_N1XSPEC_F_PRIMARY;
-  cmd.spec.keyspace = bktname;
-  cmd.spec.nkeyspace = strlen(bktname);
+  cmd.spec.keyspace = bktname.data();
+  cmd.spec.nkeyspace = strlen(bktname.data());
   cmd.callback = ixmgmtCallback;
   lcb_n1x_create(instance_, nullptr, &cmd);
   lcb_wait(instance_, LCB_WAIT_DEFAULT);
@@ -104,15 +104,16 @@ void CouchBaseInterface::createUniDB(const char *config_path, const size_t n) {
     std::mt19937 rng;
     const uint8_t seed = 42;
     rng.seed(seed);
-    std::uniform_int_distribution<int> dist(0, 21);
+    std::uniform_int_distribution<int> dist(0, nfTypes.size());
     json instances = json::parse(cf);
-    for (auto &profile : instances) {  // for 1 of 1.
+    for (auto &&profile : instances) {  // for 1 of 1.
       for (size_t i = 0; i < n; ++i) {
         const std::string nfInstanceId = std::to_string(i);
         const int randomNumber = dist(rng);
         profile["nfInstanceId"] = nfInstanceId;
         profile["nfType"] = nfTypes[randomNumber];
-        (*this).create(std::make_pair(nfInstanceId, profile.dump()));
+        this->create(std::make_pair(nfInstanceId, profile.dump()));
+        lcb_wait(instance_, LCB_WAIT_DEFAULT);
       }
     }
     cf.close();
@@ -139,7 +140,7 @@ void CouchBaseInterface::flushdb() {
   const std::string flush_path{
       "/pools/default/buckets/test_bucket/controller/doFlush"};
   lcb_install_callback(instance_, LCB_CALLBACK_HTTP,
-                       reinterpret_cast<lcb_RESPCALLBACK>(httpCallback));
+                       reinterpret_cast<lcb_RESPCALLBACK>(flushCallback));
   lcb_CMDHTTP *cmd = nullptr;
   check(lcb_cmdhttp_create(&cmd, LCB_HTTP_TYPE_MANAGEMENT),
         "create HTTP command object of MANAGEMENT type");
@@ -209,7 +210,7 @@ void queryCallback(lcb_INSTANCE *, int, const lcb_RESPQUERY *resp) {
   }
 }
 
-void httpCallback(lcb_INSTANCE *, int, const lcb_RESPHTTP *resp) {
+void flushCallback(lcb_INSTANCE *, int, const lcb_RESPHTTP *resp) {
   check(lcb_resphttp_status(resp), "HTTP operation status in the callback");
   uint16_t status;
   lcb_resphttp_http_status(resp, &status);

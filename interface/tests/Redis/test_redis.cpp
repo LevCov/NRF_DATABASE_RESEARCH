@@ -10,17 +10,20 @@
 #include "../../RedisDB/nfTypes.h"
 #include "../../UUID/UUIDv4.h"
 
-using OptionalString = sw::redis::OptionalString;
-using StrView = sw::redis::StringView;
-using json = nlohmann::json;
-
 const std::string path_dir = std::filesystem::current_path().remove_filename();
 RedisDBInterface redis("tcp://127.0.0.1:6379");
+
+namespace {
+using json = nlohmann::json;
+using keys_t = std::vector<OptionalString>;
+}  // namespace
+
 //===----------------------------------------------------------------------===//
 // CRUD redefined from the redis++ library.
 //===----------------------------------------------------------------------===//
 
 TEST(CRUD, create) {
+  checkRedisConnection(redis.connection_);
   redis.connection_->flushdb();
   bool flag = true;
   CreateRedis var("test_create_key", "nfType", "test_create_val");
@@ -32,6 +35,7 @@ TEST(CRUD, create) {
 }
 
 TEST(CRUD, read) {
+  checkRedisConnection(redis.connection_);
   redis.connection_->flushdb();
   bool flag = true;
   CreateRedis varFirst("test_create_key", "nfType", "test_create_val");
@@ -48,6 +52,7 @@ TEST(CRUD, read) {
 
 // RedisInterface::update with exist key.
 TEST(CRUD, update_exist) {
+  checkRedisConnection(redis.connection_);
   redis.connection_->flushdb();
   bool flag = true;
   CreateRedis varFirst("test_create_key", "nfType", "test_create_val");
@@ -65,6 +70,7 @@ TEST(CRUD, update_exist) {
 
 // RedisInterface::update with no exist key.
 TEST(CRUD, update_no_exist) {
+  checkRedisConnection(redis.connection_);
   redis.connection_->flushdb();
   bool flag = true;
   flag *= redis.update(std::make_pair("test_create_key", "nfType"),
@@ -81,6 +87,7 @@ TEST(CRUD, update_no_exist) {
 
 // RedisInterface::del.
 TEST(CRUD, del) {
+  checkRedisConnection(redis.connection_);
   redis.connection_->flushdb();
   bool flag = true;
   CreateRedis varFirst("test_create_key", "nfType", "test_create_val");
@@ -102,6 +109,7 @@ TEST(CRUD, del) {
 
 // RedisInterface::find.
 TEST(FUNCTION, find) {
+  checkRedisConnection(redis.connection_);
   redis.connection_->flushdb();
 
   const size_t n = 10;  // parameter for tune DB size.
@@ -111,8 +119,8 @@ TEST(FUNCTION, find) {
 
   bool flag = true;
   for (const auto& type : nfTypes) {  // string_view???
-    std::vector<OptionalString> match_keys = redis.find(type);
-    for (const auto& key : match_keys) {
+    keys_t match_keys = redis.find(type);
+    for (auto&& key : match_keys) {
       flag *= redis.connection_->hget(*key, "nfType") == type;
     }
   }
@@ -123,6 +131,7 @@ TEST(FUNCTION, find) {
 
 // RedisInterface::createUniDB.
 TEST(FUNCTION, createUniDB) {
+  checkRedisConnection(redis.connection_);
   redis.connection_->flushdb();
 
   const size_t n = 10;  // parameter for tune DB size.
